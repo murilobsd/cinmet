@@ -13,13 +13,6 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-/*
- * TODO:
- *     - Sort date;
- *     - Average temp, umid, pressao
- *     - Sum preci
- *     - Max no periodo
- */
 #include <stdio.h>
 #include <err.h>
 #include <stdlib.h>
