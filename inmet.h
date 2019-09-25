@@ -13,8 +13,8 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-#ifndef INMET_H
-#define INMET_H
+#ifndef _INMET_H
+#define _INMET_H
 
 /*
  * Automatic station weather data within one hour.
@@ -41,11 +41,10 @@ struct w_data {
         time_t          data;                   /* datetime */
         struct w_data   *next;
         size_t          length;                 /* size vector */
-};
-
-typedef struct w_data WeatherData;
+} WeatherData;
 
 extern WeatherData *    weather_init(void);
 extern void             weather_free(WeatherData *);
-extern size_t parse_file(FILE *);
-#endif
+extern size_t           parse_file(FILE *);
+
+#endif // _INMET_H
