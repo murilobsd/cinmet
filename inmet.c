@@ -55,20 +55,20 @@ parse_line(char *l)
 {
         int count = 0;
         size_t len_line;
-        char value[10];
-
+        char value[20];
         len_line = strlen(l);
 
-        for (int i = 0; i <= len_line; i++) {
-                if (l[i] == ',') {
-                        count++;
-                        value[count] = '\0';
-                        printf("Valor: %s\n", value);
-                        value[0] = '\0';
-                        count = 0;
-                } else {
-                        value[count] = l[i];
-                        count++;
+        for (int i = 0; i < len_line; i++) {
+                if (l[i] != '\0') {
+                        if (l[i] == ',') {
+                                value[count] = '\0';
+                                printf("Valor: %s\n", value);
+                                value[0] = '\0';
+                                count = 0;
+                        } else {
+                                value[count] = l[i];
+                                count++;
+                        }
                 }
         }
         
@@ -78,6 +78,7 @@ parse_line(char *l)
 size_t
 parse_file(FILE *fp)
 {
+        /* TODO: dynamic allocate/re line */
 	char ch, line[500];
 	size_t count = 0, line_value = 0, header = 0, match = 0;
 
