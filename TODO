@@ -1,0 +1,11 @@
+Importantes:
+- validar valores obtidos
+- definir alguma valor quando não vier nenhum
+- interpretar via buffer (seria legal por causa do curl)
+- poder obter dados de um periodo dd/mm/aaaa
+- calcular media de alguns sensores
+- calcular somatoria de alguns valores
+- ordernar o periodo
+
+Extra:
+- calcular o indice de inflamabilidade via NESTEROV
