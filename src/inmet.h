@@ -19,7 +19,7 @@
 /*
  * Automatic station weather data within one hour.
  */
-struct w_data {
+typedef struct w_data {
         char            codigo_estacao[4];      /* code Eg. A764 */
         float           precipitação;           /* preciption */
         float           pressao_inst;           /* inst pressure */
