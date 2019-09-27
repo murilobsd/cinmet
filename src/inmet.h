@@ -24,19 +24,20 @@
 
 // regex
 #define RE_LON \
-        "Longitude:[[:space:]]([[:punct:]?][[:digit:]]{1,2}" \
+        "Longitude:[[:space:]]([[:punct:]]?[[:digit:]]{1,2}" \
         "[[:punct:]][[:digit:]]+)"
 #define RE_LAT \
-        "Latitude:[[:space:]]?([[:punct:]?][[:digit:]]{1,2}" \
+        "Latitude:[[:space:]]?([[:punct:]]?[[:digit:]]{1,2}" \
         "[[:punct:]][[:digit:]]+)"
-#define RE_COD "OMM:</b> ([[:digit:]]+)"
-#define RE_URL "pg_dspDadosCodigo_sim\\.php\\?([A-Za-z0-9]+==)"
-#define RE_NOME "</b>[[:space:]]?([[:alpha:]]+-[A-Z][0-9]+)"
-#define RE_UF "label = '([A-Z]{2})"
-#define RE_CIDADE "label = '[A-Z]{2} - (([A-Za-z][[:space:]]?)+)'"
-#define RE_INICIO "Aberta em: ([0-9]{2}\\/[0-9]{2}\\/[0-9]{4})"
+#define RE_COD          "OMM:</b> ([[:digit:]]+)"
+#define RE_URL          "pg_dspDadosCodigo_sim\\.php\\?([A-Za-z0-9]+==)"
+#define RE_NOME         "</b>[[:space:]]?([[:alpha:]]+-[A-Z][0-9]+)"
+#define RE_UF           "label = '([A-Z]{2})"
+#define RE_CIDADE       "label = '[A-Z]{2} - (([A-Za-z][[:space:]]?)+)'"
+#define RE_INICIO       "Aberta em: ([0-9]{2}\\/[0-9]{2}\\/[0-9]{4})"
 
-#define URL "http://www.inmet.gov.br/sonabra/pg_dspDadosCodigo_sim.php?%s"
+#define URL             "http://www.inmet.gov.br/sonabra/pg_dspDados" \
+                        "Codigo_sim.php?%s"
 
 /*
  * Automatic station
