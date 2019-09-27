@@ -16,10 +16,47 @@
 #ifndef _INMET_H
 #define _INMET_H
 
+/* station.c */
+
+#define ST_MAX_CITY 50
+#define ST_MAX_NAME 50
+#define ST_MAX 579      /* número de estações 27/06/2019 */
+
+// regex
+#define RE_LON \
+        "Longitude:[[:space:]]([[:punct:]?][[:digit:]]{1,2}" \
+        "[[:punct:]][[:digit:]]+)"
+#define RE_LAT \
+        "Latitude:[[:space:]]?([[:punct:]?][[:digit:]]{1,2}" \
+        "[[:punct:]][[:digit:]]+)"
+#define RE_COD "OMM:</b> ([[:digit:]]+)"
+#define RE_URL "pg_dspDadosCodigo_sim\\.php\\?([A-Za-z0-9]+==)"
+#define RE_NOME "</b>[[:space:]]?([[:alpha:]]+-[A-Z][0-9]+)"
+#define RE_UF "label = '([A-Z]{2})"
+#define RE_CIDADE "label = '[A-Z]{2} - (([A-Za-z][[:space:]]?)+)'"
+#define RE_INICIO "Aberta em: ([0-9]{2}\\/[0-9]{2}\\/[0-9]{4})"
+
+#define URL "http://www.inmet.gov.br/sonabra/pg_dspDadosCodigo_sim.php?%s"
+
+/*
+ * Automatic station
+ */
+typedef struct station_t {
+        char            cidade[ST_MAX_CITY];
+        char            nome[ST_MAX_NAME];
+        char            uf[2];
+        char            url[2000];
+        char            url_imagem[2000];
+        float           lat;
+        float           lon;
+        uint32_t        omm;
+        time_t          inicio;
+} Station; 
+
 /*
  * Automatic station weather data within one hour.
  */
-typedef struct w_data {
+typedef struct w_data_t {
         char            codigo_estacao[4];      /* code Eg. A764 */
         float           precipitação;           /* preciption */
         float           pressao_inst;           /* inst pressure */
@@ -39,7 +76,7 @@ typedef struct w_data {
         float           vento_raj;              /* gust wind */ 
         float           vento_vel;              /* wind velocity */
         time_t          data;                   /* datetime */
-        struct w_data   *next;
+        struct w_data_t *next;
         size_t          length;                 /* size vector */
 } WeatherData;
 
