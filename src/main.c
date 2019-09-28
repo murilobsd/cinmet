@@ -23,6 +23,11 @@
 int
 main(int argc, char *argv[])
 {
+	Stations *ss;
+	ss = get_stations();
+	dump_stations(ss);
+	clean_stations(ss);
+/*
         const char *filename = "bebedouro.html";
         FILE *file;
         size_t status;
@@ -34,6 +39,7 @@ main(int argc, char *argv[])
 		errx(1, "%s", filename);
 
         if (file != NULL) fclose(file);
+*/
         return (0);
 }
 
