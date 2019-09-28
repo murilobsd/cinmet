@@ -22,7 +22,7 @@
 /*
  * Response
  */
-typedef struct response_t {{
+typedef struct response_t {
         char            *content;
         size_t          len;
         size_t          code;
