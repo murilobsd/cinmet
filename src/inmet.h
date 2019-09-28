@@ -18,6 +18,9 @@
 
 /* station.c */
 
+/* url list automatic stations */
+#define ST_URL "http://www.inmet.gov.br/sonabra/maps/pg_mapa.php" 
+
 #define ST_MAX_CITY 50
 #define ST_MAX_NAME 50
 #define ST_MAX 579      /* número de estações 27/06/2019 */
@@ -33,7 +36,8 @@
 #define RE_URL          "pg_dspDadosCodigo_sim\\.php\\?([A-Za-z0-9]+==)"
 #define RE_NOME         "</b>[[:space:]]?([[:alpha:]]+-[A-Z][0-9]+)"
 #define RE_UF           "label = '([A-Z]{2})"
-#define RE_CIDADE       "label = '[A-Z]{2} - (([A-Za-z][[:space:]]?)+)'"
+#define RE_CIDADE       "label = 'AC - (Feij.)"
+//#define RE_CIDADE       "label = '[A-Z]{2} - (([A-z]+[[:space:]]?)+)'"
 #define RE_INICIO       "Aberta em: ([0-9]{2}\\/[0-9]{2}\\/[0-9]{4})"
 
 #define URL             "http://www.inmet.gov.br/sonabra/pg_dspDados" \
