@@ -13,24 +13,88 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-//#include <curl/curl.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 
 #include "inmet.h"
 #include "request.h"
+#include "util.h"
 
-int
-main(int argc, char *argv[])
+Stations *
+get_stations(void)
 {
-	Response res;
+	Stations *sts;
+	Station *s;
 
-	res = request(ST_URL, "GET");
-	if (res.content != NULL) {
-		printf("%s\n", res.content);
-		free(res.content);
+	s = init_station();
+	sts = init_stations();
+
+	s->lon = 12.12345;
+	s->lat = 54.3210;
+	sts->estacao = s;
+
+	return (sts);
+}
+
+void 
+dump_stations(Stations *ss)
+{
+	Stations *sts;
+
+	for (sts = ss; sts != NULL; sts = ss->prox)
+		dump_station(ss->estacao);
+}
+
+
+void 
+dump_station(Station *s)
+{
+	if (s == NULL)
+		return;
+	printf("Latitude: %f\n", s->lat);
+	printf("Longitude: %f\n", s->lon);
+}
+
+void
+clean_stations(Stations *ss)
+{
+	Stations *sts;
+
+	if (ss == NULL)
+		return;
+
+	for (sts = ss; sts != NULL; sts = ss->prox) {
+		clean_station(ss->estacao);
 	}
+	free(ss);
+}
 
-	return (0);
+void
+clean_station(Station *s)
+{
+	if (s == NULL)
+		return;
+	free(s);
+}
+
+Stations *
+init_stations(void)
+{
+	Stations *ss;
+
+	ss = xmalloc(sizeof(Stations));
+	ss->estacao = NULL;
+	ss->prox = NULL;
+
+	return (ss);
+}
+
+Station *
+init_station(void)
+{
+	Station *sta;
+	
+	sta = xmalloc(sizeof(Station));
+
+	return (sta);
 }
