@@ -89,6 +89,6 @@ extern WeatherData *    weather_init(void);
 extern void             weather_free(WeatherData *);
 extern size_t           parse_file(FILE *);
 void * 			xmalloc(size_t);
-void *			xreallocarray(void *, size_t, size_t);
+void *			xrealloc(void *, size_t);
 
 #endif // _INMET_H

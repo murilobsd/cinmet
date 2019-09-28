@@ -19,8 +19,6 @@
 #include <err.h>
 #include <stdlib.h>
 
-#include "inmet.h"
-
 void *
 xmalloc(size_t size)
 {

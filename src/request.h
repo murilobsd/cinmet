@@ -35,5 +35,6 @@ typedef struct request_t {
 
 size_t wfunc(void *ptr, size_t size, size_t nmemb, void *stream);
 void init_resp(Response *);
+Response request(char *, char *);
 
 #endif // _REQUEST_H

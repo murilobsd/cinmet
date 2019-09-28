@@ -15,17 +15,19 @@
  */
 #include <curl/curl.h>
 
+#include <string.h>
+
+#include "inmet.h"
 #include "request.h"
-#include "util.h"
 
 size_t 
 wfunc(void *ptr, size_t size, size_t nmemb, void *stream) {
     	if (stream) {
         	Response *response = (Response *)stream;
         	size_t new_len = response->len + size * nmemb;
-        	response->body = xrealloc(response->body, new_len + 1);
-        	memcpy(response->body + response->len, ptr, size * nmemb);
-        	response->body[new_len] = '\0';
+        	response->content = xrealloc(response->content, new_len + 1);
+        	memcpy(response->content + response->len, ptr, size * nmemb);
+        	response->content[new_len] = '\0';
         	response->len = new_len;
         	return size * nmemb;
     	}
@@ -36,6 +38,31 @@ void
 init_resp(Response *response) {
     	response->len = 0;
 	response->code = 0;
-    	response->body = xmalloc(response->len+1);
-    	response->body[0] = '\0';
+    	response->content = xmalloc(response->len+1);
+    	response->content[0] = '\0';
+}
+
+Response request(char *url, char *method) {
+	Response 		resp;
+	CURL 			*curl = NULL;
+	struct curl_slist 	*headers = NULL;
+
+	curl_global_init(CURL_GLOBAL_ALL);
+	curl = curl_easy_init();
+	init_resp(&resp);
+
+	if (curl) {
+		curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method);
+		headers = curl_slist_append(headers, "User-Agent: inmetc - 0.0.1");
+		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+		curl_easy_setopt(curl, CURLOPT_URL, url);
+		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wfunc);
+		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp);
+		curl_easy_perform(curl);
+		curl_easy_cleanup(curl);
+		curl_slist_free_all(headers);
+		curl_global_cleanup();
+    	}
+
+	return (resp);
 }
