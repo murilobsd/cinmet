@@ -21,9 +21,10 @@
 /* url list automatic stations */
 #define ST_URL "http://www.inmet.gov.br/sonabra/maps/pg_mapa.php" 
 
-#define ST_MAX_CITY 50
-#define ST_MAX_NAME 50
-#define ST_MAX 579      /* número de estações 27/06/2019 */
+#define ST_INVALID_VAL -999.0	/* valores embranco */
+#define ST_MAX_CITY 	50
+#define ST_MAX_NAME 	50
+#define ST_MAX 		579     /* número de estações 27/06/2019 */
 
 // regex
 #define RE_LON \
@@ -42,21 +43,24 @@
 
 #define URL             "http://www.inmet.gov.br/sonabra/pg_dspDados" \
                         "Codigo_sim.php?%s"
-
 /*
  * Automatic station
  */
-typedef struct station_t {
-        char            cidade[ST_MAX_CITY];
-        char            nome[ST_MAX_NAME];
-        char            uf[2];
-        char            url[2000];
-        char            url_imagem[2000];
-        float           lat;
-        float           lon;
-        uint32_t        omm;
-        time_t          inicio;
+typedef struct statation_t {
+        char           	cidade[ST_MAX_CITY]; 	/* city name */
+        char           	nome[ST_MAX_NAME]; 	/* name */
+        char           	uf[3];			/* federative unit */ 
+        char           	url[2000];		/* url weather data */
+        float          	lat;			/* lattitude degress */
+        float          	lon;			/* longitude degress */
+        uint32_t       	omm;			/* number omm */
+        time_t         	inicio;			/* started station */
 } Station; 
+
+typedef struct stas_t {
+	Station		*estacao;		/* station type */
+	struct stas_t	*prox;			/* next station address */
+} Stations;
 
 /*
  * Automatic station weather data within one hour.
@@ -90,5 +94,12 @@ extern void             weather_free(WeatherData *);
 extern size_t           parse_file(FILE *);
 void * 			xmalloc(size_t);
 void *			xrealloc(void *, size_t);
+Stations *		get_stations(void);
+void 			dump_stations(Stations *);
+void			dump_station(Station *);
+void			clean_stations(Stations *);
+void			clean_station(Station *);
+Stations *		init_stations(void);
+Station *		init_station(void);
 
 #endif // _INMET_H
