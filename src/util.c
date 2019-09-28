@@ -13,27 +13,35 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-#ifndef _REQUEST_H
-#define _REQUEST_H
 
-/*
- * Response
- */
-typedef struct response_t {
-        char            *content;
-        size_t          len;
-        long 		code;
-} Response; 
+#include <netinet/in.h>
 
-/*
- * Request 
- */
-typedef struct request_t {
-        char            url[2000];
-        char            method[8]; 
-} Request;
+#include <err.h>
+#include <stdlib.h>
 
-size_t wfunc(void *ptr, size_t size, size_t nmemb, void *stream);
-void init_resp(Response *);
+#include "inmet.h"
 
-#endif // _REQUEST_H
+void *
+xmalloc(size_t size)
+{
+	void	*p;
+
+	if (size == 0)
+		errx(1, "xmalloc: zero");
+
+	if ((p = malloc(size)) == NULL)
+		err(1, "malloc");
+
+	return (p);
+}
+
+void *
+xrealloc(void *p, size_t size)
+{
+	void *nptr;
+
+	if ((nptr = realloc(p, size)) == NULL)
+		err(1, "realloc");
+
+	return (nptr);
+}

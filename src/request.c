@@ -16,25 +16,26 @@
 #include <curl/curl.h>
 
 #include "request.h"
-#include "xmalloc.h"
+#include "util.h"
 
 size_t 
 wfunc(void *ptr, size_t size, size_t nmemb, void *stream) {
-    if (stream) {
-        Response *response = (Response *)stream;
-        size_t new_len = response->len + size * nmemb;
-        response->body = xrealloc(response->body, new_len + 1);
-        memcpy(response->body + response->len, ptr, size * nmemb);
-        response->body[new_len] = '\0';
-        response->len = new_len;
-        return size * nmemb;
-    }
-    return 0;
+    	if (stream) {
+        	Response *response = (Response *)stream;
+        	size_t new_len = response->len + size * nmemb;
+        	response->body = xrealloc(response->body, new_len + 1);
+        	memcpy(response->body + response->len, ptr, size * nmemb);
+        	response->body[new_len] = '\0';
+        	response->len = new_len;
+        	return size * nmemb;
+    	}
+    	return 0;
 }
 
 void 
 init_resp(Response *response) {
-    response->len = 0;
-    response->body = xmalloc(response->len+1);
-    response->body[0] = '\0';
+    	response->len = 0;
+	response->code = 0;
+    	response->body = xmalloc(response->len+1);
+    	response->body[0] = '\0';
 }
