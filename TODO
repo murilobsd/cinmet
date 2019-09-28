@@ -1,11 +1,21 @@
-Importantes:
-- validar valores obtidos
-- definir alguma valor quando não vier nenhum
-- interpretar via buffer (seria legal por causa do curl)
-- poder obter dados de um periodo dd/mm/aaaa
-- calcular media de alguns sensores
-- calcular somatoria de alguns valores
-- ordernar o periodo
+INMET TO DO
+===========
 
-Extra:
-- calcular o indice de inflamabilidade via NESTEROV
+Os itens não necessitam ser resolvidos nessa ordem.
+
+Estação
+-------
+
+- [ ] Obter lista de estações (site do INMET)
+      *Aqui inclui obter o html + js e extrair os dados para os itens abaixo.*
+- [ ] Identificar os dados para a estrutura da estação.
+	- [ ] Nome
+	- [ ] Cidade
+	- [ ] UF
+	- [ ] Latitude
+	- [ ] Longitude
+	- [ ] Data de criação
+	- [ ] OMM
+	- [ ] URL para acesso dos daodos (importante) 
+- [ ] Pesquisar estações por unidade federativa (UF)
+- [ ] Pesquisar estações mais próximas dada as coordenadas e o raio (km ou m)
