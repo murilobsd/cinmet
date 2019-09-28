@@ -16,9 +16,6 @@
 #ifndef _REQUEST_H
 #define _REQUEST_H
 
-/* url list automatic stations */
-#define ST_URL "http://www.inmet.gov.br/sonabra/maps/pg_mapa.php" 
-
 /*
  * Response
  */
