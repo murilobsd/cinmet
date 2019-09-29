@@ -23,9 +23,26 @@
 int
 main(int argc, char *argv[])
 {
-	Stations *ss;
+	Stations *ss, *sts_sp;
+	size_t num_sta_sp = 0;
+
+	/* init sts_sp */
+	sts_sp = init_stations();
+	
+	/* get list of stations */
 	ss = get_stations();
-	dump_stations(ss);
+	//dump_stations(ss);
+
+	/* search stations by federative unit (UF) */
+	if ((num_sta_sp = search_sta_uf("MG", ss, sts_sp)) == 0)
+		printf("Not found stations on SP\n");
+	else
+		dump_stations(sts_sp);
+
+	/* clean list stations of uf SP */
+	//clean_stations(sts_sp);
+	if (sts_sp != NULL) free(sts_sp);
+	/* clean list stations */
 	clean_stations(ss);
 /*
         const char *filename = "bebedouro.html";

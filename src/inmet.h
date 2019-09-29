@@ -92,14 +92,18 @@ typedef struct w_data_t {
 extern WeatherData *    weather_init(void);
 extern void             weather_free(WeatherData *);
 extern size_t           parse_file(FILE *);
-void * 			xmalloc(size_t);
-void *			xrealloc(void *, size_t);
+size_t			search_sta_uf(const char *, Stations *, Stations *);
 Stations *		get_stations(void);
+void			insert_station(Station *, Stations *);
 void 			dump_stations(Stations *);
 void			dump_station(Station *);
 void			clean_stations(Stations *);
 void			clean_station(Station *);
 Stations *		init_stations(void);
 Station *		init_station(void);
+
+/* util.c */
+void * 			xmalloc(size_t);
+void *			xrealloc(void *, size_t);
 
 #endif // _INMET_H
