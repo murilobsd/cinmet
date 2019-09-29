@@ -67,7 +67,7 @@ typedef struct stas_t {
  */
 typedef struct w_data_t {
         char            codigo_estacao[4];      /* code Eg. A764 */
-        float           precipitação;           /* preciption */
+        float           precipitacao;           /* preciption */
         float           pressao_inst;           /* inst pressure */
         float           pressao_max;            /* max pressure */
         float           pressao_min;            /* min pressure */
