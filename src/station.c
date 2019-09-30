@@ -14,13 +14,91 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 #include <err.h>
+#include <regex.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "inmet.h"
-#include "request.h"
-#include "util.h"
+
+static size_t 	extract_data(char *, const char *, char ***);
+static void 	parse_stations(char *, Stations *);
+
+/*
+ * Extract longitude with content.
+ */
+size_t 
+extract_data(char *content, const char *regex, char ***esult)
+{
+	int		error = 0;
+	size_t 		count = 0;
+	regex_t 	re;
+	regmatch_t 	match[2];
+	char **result	= NULL;
+
+	result = (char **)xmalloc(579 * sizeof(char *));
+
+        if (regcomp(&re, regex, REG_EXTENDED|REG_NEWLINE) != 0)
+                err(1, "failed to compile regex '%s'", RE_LON);
+
+	error = regexec(&re, content, 2, match, 0);
+
+	while(error == 0) {
+		/*result = (char **)realloc(result, (count + 1) * sizeof(char *));
+		if (result == NULL)
+			err(1, "realloc");
+*/
+		/*printf("casou do caracteres = %lld ao %lld\n", 
+			match[1].rm_so, match[1].rm_eo);
+		*/
+
+		/*if (count < sizeof(result)) {
+			realloc(**result, sizeof(char) + 1);
+		}*/
+
+		/* match case */		
+		//printf("%lu\n", count);
+		result[count] = xmalloc(sizeof(char *) * ((match[1].rm_eo - match[1].rm_so) + 1));
+		memset(result[count], '\0', (match[1].rm_eo - match[1].rm_so) + 1);
+		memcpy(result[count], content + match[1].rm_so, match[1].rm_eo - match[1].rm_so);
+		//printf("Match: %s\n", result[count]);
+
+		content += match[1].rm_eo;	/* update start string */
+		count++;
+		error = regexec(&re, content, 2, match, REG_NOTBOL);
+	}
+
+	for (size_t i = count; i < count; i--) {
+		printf("%s\n", result[i]);
+		free(result[i]);
+	}
+
+	if (result != NULL) free(result);
+
+	return (count);
+}
+
+/* 
+ * Parse HTML
+ */
+static void 
+parse_stations(char *content, Stations *out)
+{
+	size_t 	count, i;
+	char 	**result = NULL;
+
+	printf("Parse stations\n");
+
+	
+	if ((count = extract_data(content, RE_LON, &result)) != 0) {
+		printf("Quantidade de longitude encontradas: %lu\n", count);
+		/*
+		for (i = 0; i < count; i++) {
+			printf("Longitude: %s\n", result[i]);
+		}*/
+	}
+
+}
 
 /*
  * Searching stations by federative unit.
@@ -51,35 +129,28 @@ search_sta_uf(const char *uf, Stations *in, Stations *out)
 Stations *
 get_stations(void)
 {
-	Stations *sts;
-	Station *s, *s1, *s2;
+	Stations *sts = NULL;
+	Response resp;
 
-	s = init_station();
-	s1 = init_station();
-	s2 = init_station();
 	sts = init_stations();
 
-	s->lon = 12.12345;
-	s->lat = 54.3210;
-	strcpy(s->uf, "SP");
-	s1->lon = 9.8765;
-	s1->lat = 5.6789;
-	strcpy(s1->uf, "SP");
-	s2->lon = 10.8765;
-	s2->lat = 11.6789;
-	strcpy(s2->uf, "MG");
-	insert_station(s, sts);
-	insert_station(s1, sts);
-	insert_station(s2, sts);
+	resp = request(ST_URL_LIST, "GET");
+	if (resp.len != 0)
+		parse_stations(resp.content, sts);
+
+	if (resp.content != NULL) free(resp.content);
 
 	return (sts);
 }
 
+/*
+ * Insert station on stations.
+ */
 void
 insert_station(Station *s, Stations *ss)
 {
 	Stations *n_sts;
-	
+	/* new stations */
 	n_sts = init_stations();
 
 	if (ss == NULL) {
@@ -92,6 +163,9 @@ insert_station(Station *s, Stations *ss)
 	ss->prox = n_sts;
 }
 
+/*
+ * Show stations
+ */
 void 
 dump_stations(Stations *ss)
 {
