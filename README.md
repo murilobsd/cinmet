@@ -3,7 +3,7 @@
 
 ## Porque?
 
-O Instituto Nacional de Meteorologia **[INMET]**(http://www.inmet.gov.br/portal/) 
+O Instituto Nacional de Meteorologia **[INMET](http://www.inmet.gov.br/portal/)** 
 oferece inúmeras informações meteorológicas para as mais diversas
 tomadas de decisão.
 
