@@ -53,6 +53,7 @@ typedef struct statation_t {
         char           	url[2000];		/* url weather data */
         float          	lat;			/* lattitude degress */
         float          	lon;			/* longitude degress */
+	float		alt;			/* altitude meters */
         time_t         	inicio;			/* started station */
 } Station; 
 
