@@ -18,9 +18,11 @@
 #include <string.h>
 
 #include "inmet.h"
-#include "request.h"
 
-size_t 
+static size_t 		wfunc(void *, size_t , size_t , void *);
+static void 		init_resp(Response *);
+
+static size_t 
 wfunc(void *ptr, size_t size, size_t nmemb, void *stream) {
     	if (stream) {
         	Response *response = (Response *)stream;
@@ -34,7 +36,7 @@ wfunc(void *ptr, size_t size, size_t nmemb, void *stream) {
     	return 0;
 }
 
-void 
+static void 
 init_resp(Response *response) {
     	response->len = 0;
 	response->code = 0;
@@ -42,7 +44,8 @@ init_resp(Response *response) {
     	response->content[0] = '\0';
 }
 
-Response request(char *url, char *method) {
+Response 
+request(char *url, char *method) {
 	Response 		resp;
 	CURL 			*curl = NULL;
 	struct curl_slist 	*headers = NULL;
@@ -53,11 +56,12 @@ Response request(char *url, char *method) {
 
 	if (curl) {
 		curl_easy_setopt(curl, CURLOPT_CUSTOMREQUEST, method);
-		headers = curl_slist_append(headers, "User-Agent: inmetc - 0.0.1");
+		headers = curl_slist_append(headers, USER_AGENT);
 		curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
 		curl_easy_setopt(curl, CURLOPT_URL, url);
 		curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, wfunc);
 		curl_easy_setopt(curl, CURLOPT_WRITEDATA, &resp);
+		printf("Requesting: %s\n", url);
 		curl_easy_perform(curl);
 		curl_easy_cleanup(curl);
 		curl_slist_free_all(headers);
