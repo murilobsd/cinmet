@@ -18,13 +18,13 @@
 
 /* station.c */
 
-/* url list automatic stations */
-#define ST_URL "http://www.inmet.gov.br/sonabra/maps/pg_mapa.php" 
+// url list automatic stations
+#define ST_URL_LIST "http://www.inmet.gov.br/sonabra/maps/pg_mapa.php" 
 
 #define ST_INVALID_VAL -999.0	/* valores embranco */
 #define ST_MAX_CITY 	50
 #define ST_MAX_NAME 	50
-#define ST_MAX 		579     /* número de estações 27/06/2019 */
+#define ST_MAX 		579     /* number of stations up to 27/06/2019 */
 
 // regex
 #define RE_LON \
@@ -33,12 +33,12 @@
 #define RE_LAT \
         "Latitude:[[:space:]]?([[:punct:]]?[[:digit:]]{1,2}" \
         "[[:punct:]][[:digit:]]+)"
-#define RE_COD          "OMM:</b> ([[:digit:]]+)"
+// #define RE_COD          "OMM:</b>[[:space:]]?([[:digit:]]+)"
 #define RE_URL          "pg_dspDadosCodigo_sim\\.php\\?([A-Za-z0-9]+==)"
 #define RE_NOME         "</b>[[:space:]]?([[:alpha:]]+-[A-Z][0-9]+)"
 #define RE_UF           "label = '([A-Z]{2})"
-#define RE_CIDADE       "label = 'AC - (Feij.)"
-//#define RE_CIDADE       "label = '[A-Z]{2} - (([A-z]+[[:space:]]?)+)'"
+//#define RE_CIDADE       "label = 'AC - (Feij.)"
+#define RE_CIDADE       "label = '[A-Z]{2}[[:space:]]?\\-[[:space:]]?(([A-z]+[[:space:]]?)+)'"
 #define RE_INICIO       "Aberta em: ([0-9]{2}\\/[0-9]{2}\\/[0-9]{4})"
 
 #define URL             "http://www.inmet.gov.br/sonabra/pg_dspDados" \
@@ -53,7 +53,6 @@ typedef struct statation_t {
         char           	url[2000];		/* url weather data */
         float          	lat;			/* lattitude degress */
         float          	lon;			/* longitude degress */
-        uint32_t       	omm;			/* number omm */
         time_t         	inicio;			/* started station */
 } Station; 
 
@@ -89,9 +88,9 @@ typedef struct w_data_t {
         size_t          length;                 /* size vector */
 } WeatherData;
 
-extern WeatherData *    weather_init(void);
-extern void             weather_free(WeatherData *);
-extern size_t           parse_file(FILE *);
+WeatherData *    	weather_init(void);
+void             	weather_free(WeatherData *);
+size_t           	parse_file(FILE *);
 size_t			search_sta_uf(const char *, Stations *, Stations *);
 Stations *		get_stations(void);
 void			insert_station(Station *, Stations *);
@@ -101,6 +100,30 @@ void			clean_stations(Stations *);
 void			clean_station(Station *);
 Stations *		init_stations(void);
 Station *		init_station(void);
+
+/* request.c */
+
+#define USER_AGENT \
+	"User-Agent: cinmet-0.0.1 / https://github.com/murilobsd/inmet"
+
+/*
+ * Response
+ */
+typedef struct response_t {
+        char            *content;
+        size_t          len;
+        long 		code;			/* status code */
+} Response; 
+
+/*
+ * Request 
+ */
+typedef struct request_t {
+        char            url[2000];
+        char            method[8]; 
+} Request;
+
+Response 		request(char *, char *);
 
 /* util.c */
 void * 			xmalloc(size_t);
