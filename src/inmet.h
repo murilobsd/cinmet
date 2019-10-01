@@ -19,7 +19,7 @@
 /* station.c */
 
 // url list automatic stations
-#define ST_URL_LIST "http://www.inmet.gov.br/sonabra/maps/pg_mapa.php" 
+#define ST_URL_LIST "http://www.inmet.gov.br/sonabra/maps/pg_mapa.php"
 
 #define ST_INVALID_VAL -999.0	/* valores embranco */
 #define ST_MAX_CITY 	50
@@ -49,12 +49,12 @@
 typedef struct statation_t {
         char           	cidade[ST_MAX_CITY]; 	/* city name */
         char           	nome[ST_MAX_NAME]; 	/* name */
-        char           	uf[3];			/* federative unit */ 
+        char           	uf[3];			/* federative unit */
         char           	url[2000];		/* url weather data */
         float          	lat;			/* lattitude degress */
         float          	lon;			/* longitude degress */
         time_t         	inicio;			/* started station */
-} Station; 
+} Station;
 
 typedef struct stas_t {
 	Station		*estacao;		/* station type */
@@ -70,18 +70,18 @@ typedef struct w_data_t {
         float           pressao_inst;           /* inst pressure */
         float           pressao_max;            /* max pressure */
         float           pressao_min;            /* min pressure */
-        float           pto_orvalho_inst;       /* inst dew point */ 
+        float           pto_orvalho_inst;       /* inst dew point */
         float           pto_orvalho_max;        /* max dew point */
         float           pto_orvalho_min;        /* min dew point */
         float           radiacao;               /* radiation */
         float           temp_inst;              /* inst temperature */
         float           temp_max;               /* max temperature */
         float           temp_min;               /* min temperature */
-        float           umid_inst;              /* inst humidity */ 
+        float           umid_inst;              /* inst humidity */
         float           umid_max;               /* max humidity */
         float           umid_min;               /* min humidity */
         float           vento_direcao;          /* wind direction*/
-        float           vento_raj;              /* gust wind */ 
+        float           vento_raj;              /* gust wind */
         float           vento_vel;              /* wind velocity */
         time_t          data;                   /* datetime */
         struct w_data_t *next;
@@ -113,14 +113,14 @@ typedef struct response_t {
         char            *content;
         size_t          len;
         long 		code;			/* status code */
-} Response; 
+} Response;
 
 /*
- * Request 
+ * Request
  */
 typedef struct request_t {
         char            url[2000];
-        char            method[8]; 
+        char            method[8];
 } Request;
 
 Response 		request(char *, char *);

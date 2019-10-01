@@ -3,7 +3,7 @@
 
 ## Porque?
 
-O Instituto Nacional de Meteorologia **[INMET](http://www.inmet.gov.br/portal/)** 
+O Instituto Nacional de Meteorologia **[INMET](http://www.inmet.gov.br/portal/)**
 oferece inúmeras informações meteorológicas para as mais diversas
 tomadas de decisão.
 
@@ -12,13 +12,13 @@ Uma das informações relevantes para agricultura, indústria e ciência são os
 mais conhecidas como *estações automáticas*.
 
 Essas estações se estendem por todo território Brasileiro inclusive outros países. Até
-o presente momento que é escrito esse readme ao todo são 579 estações, Os dados 
+o presente momento que é escrito esse readme ao todo são 579 estações, Os dados
 são gerados de hora em hora e os usuários tem acesso público a esses dados **somente**
 de um ano contando do dia da consulta.
 
-O problema, além de algumas instabilidades, captchas, formulários, mapas... 
+O problema, além de algumas instabilidades, captchas, formulários, mapas...
 está no momento de portar esses dados para alguma formatação que
-seja de simples interpretação para programa de computadores. 
+seja de simples interpretação para programa de computadores.
 
 No próprio site o [INMET](http://www.inmet.gov.br/portal/) disponibiliza o download para
 o formato CSV, mas o que era para ser um CSV acaba sendo um HTML com umas
@@ -26,7 +26,7 @@ o formato CSV, mas o que era para ser um CSV acaba sendo um HTML com umas
 
 **Exemplo de saída dada pelo INMET**
 ```
-                                                                                                                                                                                                                                                                                                                                                              
+
 codigo_estacao,data,hora,temp_inst,temp_max,temp_min,umid_inst,umid_max,umid_min,
 pto_orvalho_inst,pto_orvalho_max,pto_orvalho_min,pressao,pressao_max,pressao_min,
 vento_direcao,vento_vel,
@@ -40,7 +40,7 @@ vento_direcao,vento_vel,
 ```
 
 Por fim necessitava interpretar dados diariamente de todas essas estações do período
-de dois anos/a cada hora! 
+de dois anos/a cada hora!
 
 **Isso mesmo estamos falando de uma média 321024 dados/h**.
 
