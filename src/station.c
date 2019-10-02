@@ -27,7 +27,7 @@ static void 	parse_stations(char *, Stations *);
 /*
  * Extract longitude with content.
  */
-size_t 
+size_t
 extract_data(char *content, const char *regex, char ***esult)
 {
 	int		error = 0;
@@ -48,7 +48,7 @@ extract_data(char *content, const char *regex, char ***esult)
 		if (result == NULL)
 			err(1, "realloc");
 */
-		/*printf("casou do caracteres = %lld ao %lld\n", 
+		/*printf("casou do caracteres = %lld ao %lld\n",
 			match[1].rm_so, match[1].rm_eo);
 		*/
 
@@ -56,7 +56,7 @@ extract_data(char *content, const char *regex, char ***esult)
 			realloc(**result, sizeof(char) + 1);
 		}*/
 
-		/* match case */		
+		/* match case */
 		//printf("%lu\n", count);
 		result[count] = xmalloc(sizeof(char *) * ((match[1].rm_eo - match[1].rm_so) + 1));
 		memset(result[count], '\0', (match[1].rm_eo - match[1].rm_so) + 1);
@@ -78,10 +78,10 @@ extract_data(char *content, const char *regex, char ***esult)
 	return (count);
 }
 
-/* 
+/*
  * Parse HTML
  */
-static void 
+static void
 parse_stations(char *content, Stations *out)
 {
 	size_t 	count, i;
@@ -89,7 +89,7 @@ parse_stations(char *content, Stations *out)
 
 	printf("Parse stations\n");
 
-	
+
 	if ((count = extract_data(content, RE_LON, &result)) != 0) {
 		printf("Quantidade de longitude encontradas: %lu\n", count);
 		/*
@@ -108,9 +108,9 @@ size_t
 search_sta_uf(const char *uf, Stations *in, Stations *out)
 {
 	size_t count = 0;
-	
-	printf("Searching stations by UF: '%s'\n", uf); 
-	
+
+	printf("Searching stations by UF: '%s'\n", uf);
+
 	while(in != NULL) {
 		if (in->estacao != NULL) {
 			if (strncmp(in->estacao->uf, uf, 2) == 0) {
@@ -166,7 +166,7 @@ insert_station(Station *s, Stations *ss)
 /*
  * Show stations
  */
-void 
+void
 dump_stations(Stations *ss)
 {
 	while(ss != NULL) {
@@ -176,7 +176,7 @@ dump_stations(Stations *ss)
 }
 
 
-void 
+void
 dump_station(Station *s)
 {
 	if (s == NULL)
@@ -223,7 +223,7 @@ Station *
 init_station(void)
 {
 	Station *sta;
-	
+
 	sta = xmalloc(sizeof(Station));
 
 	return (sta);
