@@ -9,8 +9,8 @@
 
 > A meteorologia vem tomando conta dos noticiários nas últimas décadas. A crecente imprevisibilidade
 do meio ambiente torna os fenômenos naturais cada vez mais difíceis de se previnir, prejudicando
-não somente a natureza mas todos que dependem dela, incluindo a NÓS. 
-É certo que as atitudes dos seres humanos vêm contribuindo com a crescente instabilidade 
+não somente a natureza mas todos que dependem dela, incluindo a NÓS.
+É certo que as atitudes dos seres humanos vêm contribuindo com a crescente instabilidade
 dos efeitos naturais fazendo com que certas alterações tragam danos irreversíveis para a humanidade.
 
 ## CINMET?
@@ -28,3 +28,77 @@ vínculo com a instituição.**
 
 > Todos os esforços, são frutos de finais de semana sem NETFLIX e acredite
 alguns sem :coffee: :sleeping:
+
+## Índice
+
+- [Instalação](#instalação)
+    - [Dependências](#dependências)
+    - [Compilando](#Compilando)
+- [Uso](#uso)
+
+## Instalação
+
+Os passos abaixo serão conduzidos no sistema operacional
+[OpenBSD](https://openbsd.org), alguns comando devem divergir do seu
+sistema operacional.
+
+### Dependências
+
+Para as chamadas http a biblioteca CINMET utiliza a biblioteca CURL,
+para instalar via package:
+
+```
+doas pkg_add curl
+```
+
+### Compilando
+
+```
+make
+```
+
+## Uso
+
+No código fonte você deve ter percebido que existe um _main_, ele só é
+utilizado para fins de teste e não deve ser usado. Abaixo um exemplo de
+como obter as estações do estado de São Paulo.
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "inmet.h"
+
+int
+main(int argc, char *argv[])
+{
+        Stations *ss, *sts_sp;
+        size_t num_sta_sp = 0;
+
+        /* init sts_sp */
+        sts_sp = init_stations();
+
+        /* get list of stations */
+        ss = get_stations();
+        //dump_stations(ss);
+
+        /* search stations by federative unit (UF) */
+        if ((num_sta_sp = search_sta_uf("SP", ss, sts_sp)) == 0)
+                printf("Not found stations on SP\n");
+        else
+                dump_stations(sts_sp);
+
+        //clean_stations(sts_sp);
+        if (sts_sp != NULL) free(sts_sp);
+        /* clean list stations */
+        clean_stations(ss);
+
+        return (0);
+}
+```
+
+Agora basta compilar:
+
+```
+cc -o myprogram -I./ -linmet myprogram.c
+```
