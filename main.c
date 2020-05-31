@@ -36,7 +36,7 @@ main(void)
 	printf("%s\n", h.content);
 
 
-	html_parse_form(h.content, html.size, &numFields);
+	html_parse_form(h.content, h.size, &numFields);
 
 	html_free(&h);
 

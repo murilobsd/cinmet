@@ -22,7 +22,7 @@ struct field {
 	char 	*name;
 	char	*value;
 };
-struct field 	*html_parse_form(char *, size_t *, size_t *);
+struct field 	*html_parse_form(char *, size_t, size_t *);
 
 struct html {
 	char 	*content;

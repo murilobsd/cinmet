@@ -15,8 +15,8 @@
 PREFIX?=	/usr/local
 
 CC?=		cc
-CFLAGS:=	-std=c89 -O2 -Wall -Wunused \
-		-W -Werror
+CFLAGS:=	-std=c89 -O2 #-Wall -Wunused \
+		#-W -Werror
 LDFLAGS:=	-L.
 NAME:=		inmet
 MAJOR:=		0

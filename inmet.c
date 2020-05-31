@@ -23,13 +23,50 @@
 static struct field fields[3];
 
 struct field *
-html_parse_form(char *content, size_t *size, size_t *numFields)
+html_parse_form(char *content, size_t size, size_t *numFields)
 {
-	const 		maxFields = 3;
+	/*const int	maxFields = 3;*/
 	const char 	*field1 = "aleaValue";
 	*numFields = 3;
+	//char *field1Value;
 
 	printf("Field1: %s\n", field1);
+
+	int is_enter = 0;
+	int count = 0;
+
+	//field1Value = strchr(content, 'v');
+	for (size_t i = 0; i < size; i++) {
+		if (i + 1 < size && is_enter == 0)
+			if (content[i] == 'v' && content[i+1] == 'a') {
+				printf("Acho que encontrei\n");
+				is_enter = 1;
+				count = 1;
+			}
+		if (is_enter == 1) {
+			count += 1;
+		}
+
+		if (count == 9) {
+			int para = 0;
+			int num = 0;
+			char value[80];
+			while (para == 0) {
+				if (content[i] != '"')
+					value[num] = content[i];
+				else {
+					value[num++] = '\0';
+					para = 1;
+				}
+				num++;
+				i++;
+			}
+			//printf("%c\n", content[i]);
+			printf("value: %s\n", value);
+			count = 0;
+			is_enter = 0;
+		}
+	}
 
 	return NULL;
 }
