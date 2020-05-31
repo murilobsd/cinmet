@@ -5,7 +5,6 @@ Submissão do Formulário:
 	- [X] aleaValue (valor captcha)
 	- [X] xaleaValue
 	- [X] xID
-- [ ] Codificar b64
 - [ ] Decodificar b64
 - [ ] Obter o código do captcha
 
