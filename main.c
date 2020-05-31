@@ -13,50 +13,32 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-#include <stdio.h>
+
 #include <err.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "inmet.h"
 
 int
-main(int argc, char *argv[])
+main(void)
 {
-	Stations *ss, *sts_sp;
-	size_t num_sta_sp = 0;
+	struct html 	h;
+	const char 	*form = "./form_sta.html";
+	size_t numFields = 0;
 
-	/* init sts_sp */
-	sts_sp = init_stations();
-	
-	/* get list of stations */
-	ss = get_stations();
-	//dump_stations(ss);
+	h = html_open_file(form);
 
-	/* search stations by federative unit (UF) */
-	if ((num_sta_sp = search_sta_uf("MG", ss, sts_sp)) == 0)
-		printf("Not found stations on SP\n");
-	else
-		dump_stations(sts_sp);
+	if (h.size == 0)
+		return(1);
 
-	/* clean list stations of uf SP */
-	//clean_stations(sts_sp);
-	if (sts_sp != NULL) free(sts_sp);
-	/* clean list stations */
-	clean_stations(ss);
-/*
-        const char *filename = "bebedouro.html";
-        FILE *file;
-        size_t status;
+	printf("%s\n", h.content);
 
-        if ((file = fopen(filename, "r")) == NULL)
-                err(1, "%s", filename);
 
-	if ((status = parse_file(file)) != 0)
-		errx(1, "%s", filename);
+	html_parse_form(h.content, html.size, &numFields);
 
-        if (file != NULL) fclose(file);
-*/
+	html_free(&h);
+
         return (0);
 }
-

@@ -13,121 +13,23 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-#ifndef _INMET_H
-#define _INMET_H
 
-/* station.c */
+#ifndef INMET_H
+#define INMET_H
 
-// url list automatic stations
-#define ST_URL_LIST "http://www.inmet.gov.br/sonabra/maps/pg_mapa.php"
 
-#define ST_INVALID_VAL -999.0	/* valores embranco */
-#define ST_MAX_CITY 	50
-#define ST_MAX_NAME 	50
-#define ST_MAX 		579     /* number of stations up to 27/06/2019 */
+struct field {
+	char 	*name;
+	char	*value;
+};
+struct field 	*html_parse_form(char *, size_t *, size_t *);
 
-// regex
-#define RE_LON \
-        "Longitude:[[:space:]]([[:punct:]]?[[:digit:]]{1,2}" \
-        "[[:punct:]][[:digit:]]+)"
-#define RE_LAT \
-        "Latitude:[[:space:]]?([[:punct:]]?[[:digit:]]{1,2}" \
-        "[[:punct:]][[:digit:]]+)"
-// #define RE_COD          "OMM:</b>[[:space:]]?([[:digit:]]+)"
-#define RE_URL          "pg_dspDadosCodigo_sim\\.php\\?([A-Za-z0-9]+==)"
-#define RE_NOME         "</b>[[:space:]]?([[:alpha:]]+-[A-Z][0-9]+)"
-#define RE_UF           "label = '([A-Z]{2})"
-//#define RE_CIDADE       "label = 'AC - (Feij.)"
-#define RE_CIDADE       "label = '[A-Z]{2}[[:space:]]?\\-[[:space:]]?(([A-z]+[[:space:]]?)+)'"
-#define RE_INICIO       "Aberta em: ([0-9]{2}\\/[0-9]{2}\\/[0-9]{4})"
+struct html {
+	char 	*content;
+	size_t 	size;
+};
 
-#define URL             "http://www.inmet.gov.br/sonabra/pg_dspDados" \
-                        "Codigo_sim.php?%s"
-/*
- * Automatic station
- */
-typedef struct statation_t {
-        char           	cidade[ST_MAX_CITY]; 	/* city name */
-        char           	nome[ST_MAX_NAME]; 	/* name */
-        char           	uf[3];			/* federative unit */
-        char           	url[2000];		/* url weather data */
-        float          	lat;			/* lattitude degress */
-        float          	lon;			/* longitude degress */
-	float		alt;			/* altitude meters */
-        time_t         	inicio;			/* started station */
-} Station;
+struct html	 html_open_file(const char *);
+void		 html_free(struct html *);
 
-typedef struct stas_t {
-	Station		*estacao;		/* station type */
-	struct stas_t	*prox;			/* next station address */
-} Stations;
-
-/*
- * Automatic station weather data within one hour.
- */
-typedef struct w_data_t {
-        char            codigo_estacao[4];      /* code Eg. A764 */
-        float           precipitacao;           /* preciption */
-        float           pressao_inst;           /* inst pressure */
-        float           pressao_max;            /* max pressure */
-        float           pressao_min;            /* min pressure */
-        float           pto_orvalho_inst;       /* inst dew point */
-        float           pto_orvalho_max;        /* max dew point */
-        float           pto_orvalho_min;        /* min dew point */
-        float           radiacao;               /* radiation */
-        float           temp_inst;              /* inst temperature */
-        float           temp_max;               /* max temperature */
-        float           temp_min;               /* min temperature */
-        float           umid_inst;              /* inst humidity */
-        float           umid_max;               /* max humidity */
-        float           umid_min;               /* min humidity */
-        float           vento_direcao;          /* wind direction*/
-        float           vento_raj;              /* gust wind */
-        float           vento_vel;              /* wind velocity */
-        time_t          data;                   /* datetime */
-        struct w_data_t *next;
-        size_t          length;                 /* size vector */
-} WeatherData;
-
-WeatherData *    	weather_init(void);
-void             	weather_free(WeatherData *);
-size_t           	parse_file(FILE *);
-size_t			search_sta_uf(const char *, Stations *, Stations *);
-Stations *		get_stations(void);
-void			insert_station(Station *, Stations *);
-void 			dump_stations(Stations *);
-void			dump_station(Station *);
-void			clean_stations(Stations *);
-void			clean_station(Station *);
-Stations *		init_stations(void);
-Station *		init_station(void);
-
-/* request.c */
-
-#define USER_AGENT \
-	"User-Agent: cinmet-0.0.1 / https://github.com/murilobsd/inmet"
-
-/*
- * Response
- */
-typedef struct response_t {
-        char            *content;
-        size_t          len;
-        long 		code;			/* status code */
-} Response;
-
-/*
- * Request
- */
-typedef struct request_t {
-        char            url[2000];
-        char            method[8];
-} Request;
-
-Response 		request(char *, char *);
-
-/* util.c */
-void * 			xmalloc(size_t);
-void *			xrealloc(void *, size_t);
-
-#endif // _INMET_H
+#endif /* INMET_H */

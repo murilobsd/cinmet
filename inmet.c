@@ -20,81 +20,72 @@
 
 #include "inmet.h"
 
-static int parse_line(char *);
+static struct field fields[3];
 
-WeatherData *
-weather_init(void)
+struct field *
+html_parse_form(char *content, size_t *size, size_t *numFields)
 {
-        WeatherData *w;
+	const 		maxFields = 3;
+	const char 	*field1 = "aleaValue";
+	*numFields = 3;
 
-        if ((w = malloc(1 * sizeof(WeatherData))) == NULL)
-                        err(1, NULL);
-        return w;
+	printf("Field1: %s\n", field1);
+
+	return NULL;
+}
+
+
+struct html
+html_open_file(const char *filename)
+{
+	FILE *fp = NULL;
+	size_t size;
+	struct html h = {.size = 0, .content = NULL};
+
+	size = 0;
+
+	if (filename == NULL)
+		goto err;
+
+	if ((fp = fopen(filename, "rb")) == NULL)
+		goto err;
+
+	if (fseek(fp, 0, SEEK_END) != 0)
+		goto err;
+
+	size = ftell(fp);
+
+	if (fseek(fp, 0, SEEK_SET) != 0)
+		goto err;
+
+	if (size <= 0)
+		goto err;
+
+	h.size = size;
+	h.content = (char *)malloc(size + 1);
+
+	if (h.content == NULL)
+		goto err;
+
+	size_t nread = fread(h.content, 1, size, fp);
+
+	if (nread != size)
+		goto err;
+
+	fclose(fp);
+	return h;
+
+err:
+	if (fp != NULL) fclose(fp);
+	if (h.content != NULL) free(h.content);
+	return h;
 }
 
 void
-weather_free(WeatherData *w)
+html_free(struct html *h)
 {
-        if (w == NULL)
-                return;
-        for (int i = 0; i < w->length; i++) {
-                free(w->next);
-        }
-        free(w);
-}
+	if (h == NULL) return;
 
-static int
-parse_line(char *l)
-{
-        int count = 0;
-        size_t len_line;
-        char value[20];
-        len_line = strlen(l);
-
-        for (int i = 0; i < len_line; i++) {
-                if (l[i] != '\0') {
-                        if (l[i] == ',') {
-                                value[count] = '\0';
-                                printf("Valor: %s\n", value);
-                                value[0] = '\0';
-                                count = 0;
-                        } else {
-                                value[count] = l[i];
-                                count++;
-                        }
-                }
-        }
-        
-        return(0);
-}
-
-size_t
-parse_file(FILE *fp)
-{
-        /* TODO: dynamic allocate/re line */
-	char ch, line[500];
-	size_t count = 0, line_value = 0, header = 0, match = 0;
-
-        while ((ch = getc(fp)) != EOF) {
-                if (ch != '\n' && ch != ' ') {
-                        if (ch == '<' || ch == 'b' || ch == 'r' || ch == '>') {
-                                match++;
-                        } else {
-                                match = 0;
-                        }
-                        if (match == 4) {
-                                line[line_value-3] = '\0';
-                                if (header != 0)
-                                        parse_line(line);
-                                header++;
-                                match = 0;
-                                line_value = 0;
-                                count++;
-                        } else {
-                                line[line_value] = (char)ch;
-                                line_value++;
-                        }
-                }
-        }
-	return (0);
+	if (h->content != NULL)
+		free(h->content);
 }
