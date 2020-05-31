@@ -2,9 +2,9 @@ Submissão do Formulário:
 
 - [X] Abrir o arquivo html (request)
 - Parsear alguns inputs para obter os valores de post
-	- [ ] aleaValue (valor captcha)
-	- [ ] xaleaValue
-	- [ ] xID
+	- [X] aleaValue (valor captcha)
+	- [X] xaleaValue
+	- [X] xID
 - [ ] Codificar b64
 - [ ] Decodificar b64
 - [ ] Obter o código do captcha
