@@ -18,6 +18,29 @@
 #define INMET_H
 
 
+struct station_data {
+	char codigo_estacao[5];
+	char data[11];
+	uint8_t hora;
+	float temp_inst;
+	float temp_max;
+	float temp_min;
+	float umid_inst;
+	float umid_max;
+	float umid_min;
+	float pto_orvalho_inst;
+	float pto_orvalho_max;
+	float pto_orvalho_min;
+	float pressao;
+	float pressao_max;
+	float pressao_min;
+	float vento_vel;
+	float vento_direcao;
+	float vento_rajada;
+	float radiacao;
+	float precipitacao;
+};
+
 struct field {
 	char 	*name;
 	char	*value;
