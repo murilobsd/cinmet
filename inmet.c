@@ -60,10 +60,18 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 	}
 
 	tokens[i] = NULL;
-	printf("Sizeof token: %lu", sizeof(tokens));
-	for (size_t x = 0; x < i; x++)
+	//printf("Sizeof token: %lu", sizeof(tokens));
+	for (size_t x = 12; x < i; x++) {
 		printf("%s\n", tokens[x]);
+		char *field = strtok(tokens[x], ",");
+		int count = 1;
+		while (field) {
+			printf("Campo %d: %s\n", count, field);
+			field = strtok(NULL, ",");
+			count +=1;
+		}
 
+	}
 	return (0);
 }
 
