@@ -19,4 +19,10 @@ Misc:
 
 - [X] parsear string para float (atof, strtof);
 - [X] parsear data para time_t (strptime);
-- [ ] converter string para int
+- [ ] converter string para int (para salvar a hora na estrutura tm)
+
+Request:
+
+- [ ] Requisitar Formulário
+- [ ] Enviar dados pelo formulário
+- [ ] Realizar o download do "csv"
