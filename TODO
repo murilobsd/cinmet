@@ -5,8 +5,8 @@ Submissão do Formulário:
 	- [X] aleaValue (valor captcha)
 	- [X] xaleaValue
 	- [X] xID
-- [ ] Decodificar b64
-- [ ] Obter o código do captcha
+- [X] Decodificar b64
+- [X] Obter o código do captcha
 
 Obter dados meteorológicos:
 

@@ -27,6 +27,9 @@ main(void)
 	struct html 	h;
 	const char 	*form = "./form_sta.html";
 	size_t numFields = 0;
+	const char 	*b64en = "NDcwOQ=="; // "4709"
+	unsigned char captcha[10];
+	size_t captchasize = 10;
 
 	h = html_open_file(form);
 
@@ -37,6 +40,12 @@ main(void)
 
 
 	html_parse_form(h.content, h.size, &numFields);
+
+	int err = b64_decode((char *)b64en, strlen(b64en), captcha, &captchasize);
+	if (err != 0)
+		printf("Erro decode\n");
+
+	printf("Captcha: %s\n", captcha);
 
 	html_free(&h);
 
