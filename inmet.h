@@ -17,11 +17,11 @@
 #ifndef INMET_H
 #define INMET_H
 
+#include <time.h>
 
 struct station_data {
 	char codigo_estacao[5];
-	char data[11];
-	uint8_t hora;
+	struct tm data;
 	float temp_inst;
 	float temp_max;
 	float temp_min;

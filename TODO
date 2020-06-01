@@ -18,4 +18,5 @@ Obter dados meteorológicos:
 Misc:
 
 - [X] parsear string para float (atof, strtof);
-- [ ] parsear data para time_t (strptime);
+- [X] parsear data para time_t (strptime);
+- [ ] converter string para int

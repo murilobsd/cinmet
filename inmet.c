@@ -28,6 +28,7 @@
    das estacoes automaticas eh a cada hora  basta 24h * 365d = 4390
 */
 #define MAX_TOKENS 5000
+#define DEFAULT_DT_FORMAT "%d/%m/%Y"
 
 static const char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const unsigned char d[] = {
@@ -45,6 +46,15 @@ static const unsigned char d[] = {
 };
 
 static struct field fields[3];
+static int dttotm(const char *, struct tm *);
+
+static int
+dttotm(const char *datestr, struct tm *tm)
+{
+	if ((strptime(datestr, DEFAULT_DT_FORMAT, tm)) == NULL)
+		return (1);
+	return (0);
+}
 
 int
 data_parse(char *in, size_t inlen, size_t *outlen)
@@ -69,7 +79,15 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 		char *field = strtok(tokens[x], ",");
 		int count = 1;
 		while (field) {
-			if (count > 3) {
+			if (count == 2) {
+				/* campo date */
+				struct tm tm;
+				if (dttotm((const char *)field, &tm) == 0)
+					printf("Dia: %d Mês: %d Ano: %d\n", 
+					    tm.tm_mday, (tm.tm_mon+1), 
+					    (1900 +tm.tm_year));
+			} else if (count > 3) {
+				/* campos das variaveis meteorologicas */
 				float res = strtof(field, (char **)NULL);
 				printf("Campo %d: %s (original)\n", count, field);
 				printf("Campo %d: %.2f (convertido)\n", count, res);
