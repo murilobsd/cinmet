@@ -32,8 +32,13 @@ main(void)
 	size_t h_data_size = 0;
 
 	const char 	*b64en = "NDcwOQ=="; // "4709"
+	const char 	*b64de = "A307"; // "QTMwNw=="
+
 	unsigned char captcha[10];
 	size_t captchasize = 10;
+
+	char staid[10];
+	size_t staid_size = 9;
 
 	h = html_open_file(form);
 
@@ -61,6 +66,12 @@ main(void)
 	printf("%s\n", h_data.content);
 
 	data_parse(h_data.content, h_data.size, &h_data_size);
+
+	err = b64_encode((const void *)b64de, strlen(b64de), staid, staid_size);
+	if (err != 0)
+		printf("Erro decode\n");
+
+	printf("Station ID: %s\n", staid);
 
 	html_free(&h);
 	html_free(&h_data);

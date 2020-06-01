@@ -17,6 +17,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 
 #include "inmet.h"
 
@@ -28,6 +29,7 @@
 */
 #define MAX_TOKENS 5000
 
+static const char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 static const unsigned char d[] = {
     66,66,66,66,66,66,66,66,66,66,64,66,66,66,66,66,66,66,66,66,66,66,66,66,66,
     66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,62,66,66,66,63,52,53,
@@ -51,6 +53,7 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 	char *tokens[MAX_TOKENS];
 	char *last;
 	int i = 0;
+	size_t x;
 
 	/* split br */
 	for ((p = strtok_r(in, "<br>", &last)); p;
@@ -61,7 +64,7 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 
 	tokens[i] = NULL;
 	//printf("Sizeof token: %lu", sizeof(tokens));
-	for (size_t x = 12; x < i; x++) {
+	for (x = 12; x < i; x++) {
 		printf("%s\n", tokens[x]);
 		char *field = strtok(tokens[x], ",");
 		int count = 1;
@@ -77,6 +80,56 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 		}
 
 	}
+	return (0);
+}
+
+int
+b64_encode(const void *buf, size_t buflen, char *out, size_t outlen)
+{
+	const uint8_t *data = (const uint8_t *)buf;
+	size_t x;
+	size_t resultindex = 0;
+	uint32_t n = 0;
+	int padcount = buflen % 3;
+	uint8_t n0, n1, n2, n3;
+
+	for (x = 0; x < buflen; x += 3) {
+		n = ((uint32_t)data[x]) << 16;
+		if ((x+1) < buflen)
+			n += ((uint32_t)data[x+1]) << 8;
+		if ((x+2) < buflen)
+			n += data[x+2];
+
+		n0 = (uint8_t)(n >> 18) & 63;
+		n1 = (uint8_t)(n >> 12) & 63;
+		n2 = (uint8_t)(n >> 6) & 63;
+		n3 = (uint8_t)n & 63;
+
+		if (resultindex >= outlen) return 1;
+		out[resultindex++] = b64[n0];
+		if (resultindex >= outlen) return 1;
+		out[resultindex++] = b64[n1];
+
+		if ((x+1) < buflen) {
+			if (resultindex >= outlen) return 1;
+			out[resultindex++] = b64[n2];
+		}
+
+		if ((x+2) < buflen) {
+			if (resultindex >= outlen) return 1;
+			out[resultindex++] = b64[n3];
+		}
+	}
+
+	if (padcount > 0) {
+		for (; padcount < 3; padcount++) {
+			if (resultindex >= outlen) return 1;
+			out[resultindex++] = '=';
+		}
+	}
+
+	if (resultindex >= outlen) return 1;
+	out[resultindex] = 0;
 	return (0);
 }
 
@@ -152,9 +205,10 @@ html_parse_form(char *content, size_t size, size_t *numFields)
 	int is_enter = 0;
 	int count = 0;
 	int found = 0;
+	size_t i;
 
 	//field1Value = strchr(content, 'v');
-	for (size_t i = 0; i < size; i++) {
+	for (i = 0; i < size; i++) {
 		if (i + 1 < size && is_enter == 0)
 			if (content[i] == 'v' && content[i+1] == 'a') {
 				printf("Acho que encontrei\n");

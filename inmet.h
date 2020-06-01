@@ -55,6 +55,7 @@ struct html {
 struct html	 html_open_file(const char *);
 void		 html_free(struct html *);
 int		 b64_decode(char *, size_t, unsigned char *, size_t *);
+int		 b64_encode(const void *, size_t, char *, size_t);
 int		 data_parse(char *, size_t, size_t *);
 
 #endif /* INMET_H */

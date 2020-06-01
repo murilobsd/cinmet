@@ -7,7 +7,7 @@ Submissão do Formulário:
 	- [X] xID
 - [X] Decodificar b64
 - [X] Obter o código do captcha
-- [ ] Codificar b64
+- [X] Codificar b64
 
 Obter dados meteorológicos:
 
@@ -17,5 +17,5 @@ Obter dados meteorológicos:
 
 Misc:
 
-- [ ] parsear string para float (atof, strtof);
+- [X] parsear string para float (atof, strtof);
 - [ ] parsear data para time_t (strptime);
