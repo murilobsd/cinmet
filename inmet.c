@@ -66,7 +66,12 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 		char *field = strtok(tokens[x], ",");
 		int count = 1;
 		while (field) {
-			printf("Campo %d: %s\n", count, field);
+			if (count > 3) {
+				float res = strtof(field, (char **)NULL);
+				printf("Campo %d: %s (original)\n", count, field);
+				printf("Campo %d: %.2f (convertido)\n", count, res);
+			} else 
+				printf("Campo %d: %s\n", count, field);
 			field = strtok(NULL, ",");
 			count +=1;
 		}
