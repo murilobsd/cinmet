@@ -23,6 +23,10 @@
 #define WHITESPACE 64
 #define EQUALS     65
 #define INVALID    66
+/* o maximo que o INMET permite pesquisar 1 ano como a seria historica
+   das estacoes automaticas eh a cada hora  basta 24h * 365d = 4390
+*/
+#define MAX_TOKENS 5000
 
 static const unsigned char d[] = {
     66,66,66,66,66,66,66,66,66,66,64,66,66,66,66,66,66,66,66,66,66,66,66,66,66,
@@ -43,6 +47,22 @@ static struct field fields[3];
 int
 data_parse(char *in, size_t inlen, size_t *outlen)
 {
+	char *p;
+	char *tokens[MAX_TOKENS];
+	char *last;
+	int i = 0;
+
+	/* split br */
+	for ((p = strtok_r(in, "<br>", &last)); p;
+	    (p = strtok_r(NULL, "<br>", &last))) {
+		if (i < MAX_TOKENS - 1)
+			tokens[i++] = p;
+	}
+
+	tokens[i] = NULL;
+	printf("Sizeof token: %lu", sizeof(tokens));
+	for (size_t x = 0; x < i; x++)
+		printf("%s\n", tokens[x]);
 
 	return (0);
 }
