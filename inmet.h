@@ -19,26 +19,43 @@
 
 #include <time.h>
 
-struct station_data {
-	char codigo_estacao[5];
-	struct tm data;
-	float temp_inst;
-	float temp_max;
-	float temp_min;
-	float umid_inst;
-	float umid_max;
-	float umid_min;
-	float pto_orvalho_inst;
-	float pto_orvalho_max;
-	float pto_orvalho_min;
-	float pressao;
-	float pressao_max;
-	float pressao_min;
-	float vento_vel;
-	float vento_direcao;
-	float vento_rajada;
-	float radiacao;
-	float precipitacao;
+/*
+ * INMET allows searching in a maximum period of 1 year, that is, the maximum
+ * number of data returned does not exceed 5000. The calculation would be:
+ * 		MAX_NUM_DATA = 24 * 1 * 365 = 8760
+ */
+#define B64_EQUALS	65
+#define B64_INVALID	66
+#define B64_WHITESPACE	64
+#define DATE_FORMAT 	"%d/%m/%Y"
+#define MAX_FIELDS	20
+#define MAX_NUM_DATA 	8760
+#define MAX_STA_COD	5
+#define MAX_TOKENS 	(8760 * MAX_FIELDS)
+
+/*
+ * Structure represents data from INMET automatic stations.
+ */
+struct sta_data {
+	char 		code[MAX_STA_COD]; 	/* station code A000 */
+	struct tm 	data;			/* date + hour */
+	float		temp_inst;		/* temperature */
+	float		temp_max;		/* max temperature */
+	float		temp_min;		/* min temperature */
+	float		umid_inst;		/* humidity */
+	float		umid_max;		/* max humidity */
+	float		umid_min;		/* min humidity */
+	float		pto_orvalho_inst;	/* dew point */
+	float		pto_orvalho_max;	/* max dew point */
+	float		pto_orvalho_min;	/* min point */
+	float		pressao;		/* pressure */
+	float		pressao_max;		/* pressure max */
+	float		pressao_min;		/* min pressure */
+	float		vento_vel;		/* wind speed */
+	float		vento_direcao;		/* wind direction */
+	float		vento_rajada;		/* gust of wind */
+	float		radiacao;		/* radiation */
+	float		precipitacao;		/* precipitation */
 };
 
 struct field {
@@ -54,8 +71,10 @@ struct html {
 
 struct html	 html_open_file(const char *);
 void		 html_free(struct html *);
+int		 data_parse(char *, size_t, size_t *);
+
+/* b64.c */
 int		 b64_decode(char *, size_t, unsigned char *, size_t *);
 int		 b64_encode(const void *, size_t, char *, size_t);
-int		 data_parse(char *, size_t, size_t *);
 
 #endif /* INMET_H */

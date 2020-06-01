@@ -21,29 +21,7 @@
 
 #include "inmet.h"
 
-#define WHITESPACE 64
-#define EQUALS     65
-#define INVALID    66
-/* o maximo que o INMET permite pesquisar 1 ano como a seria historica
-   das estacoes automaticas eh a cada hora  basta 24h * 365d = 4390
-*/
-#define MAX_TOKENS 5000
-#define DEFAULT_DT_FORMAT "%d/%m/%Y"
 
-static const char b64[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
-static const unsigned char d[] = {
-    66,66,66,66,66,66,66,66,66,66,64,66,66,66,66,66,66,66,66,66,66,66,66,66,66,
-    66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,62,66,66,66,63,52,53,
-    54,55,56,57,58,59,60,61,66,66,66,65,66,66,66, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
-    10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,66,66,66,66,66,66,26,27,28,
-    29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,66,66,
-    66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,
-    66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,
-    66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,
-    66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,
-    66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,66,
-    66,66,66,66,66,66
-};
 
 static struct field fields[3];
 static int dttotm(const char *, struct tm *);
@@ -51,7 +29,7 @@ static int dttotm(const char *, struct tm *);
 static int
 dttotm(const char *datestr, struct tm *tm)
 {
-	if ((strptime(datestr, DEFAULT_DT_FORMAT, tm)) == NULL)
+	if ((strptime(datestr, DATE_FORMAT, tm)) == NULL)
 		return (1);
 	return (0);
 }
@@ -100,115 +78,6 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 	}
 	return (0);
 }
-
-int
-b64_encode(const void *buf, size_t buflen, char *out, size_t outlen)
-{
-	const uint8_t *data = (const uint8_t *)buf;
-	size_t x;
-	size_t resultindex = 0;
-	uint32_t n = 0;
-	int padcount = buflen % 3;
-	uint8_t n0, n1, n2, n3;
-
-	for (x = 0; x < buflen; x += 3) {
-		n = ((uint32_t)data[x]) << 16;
-		if ((x+1) < buflen)
-			n += ((uint32_t)data[x+1]) << 8;
-		if ((x+2) < buflen)
-			n += data[x+2];
-
-		n0 = (uint8_t)(n >> 18) & 63;
-		n1 = (uint8_t)(n >> 12) & 63;
-		n2 = (uint8_t)(n >> 6) & 63;
-		n3 = (uint8_t)n & 63;
-
-		if (resultindex >= outlen) return 1;
-		out[resultindex++] = b64[n0];
-		if (resultindex >= outlen) return 1;
-		out[resultindex++] = b64[n1];
-
-		if ((x+1) < buflen) {
-			if (resultindex >= outlen) return 1;
-			out[resultindex++] = b64[n2];
-		}
-
-		if ((x+2) < buflen) {
-			if (resultindex >= outlen) return 1;
-			out[resultindex++] = b64[n3];
-		}
-	}
-
-	if (padcount > 0) {
-		for (; padcount < 3; padcount++) {
-			if (resultindex >= outlen) return 1;
-			out[resultindex++] = '=';
-		}
-	}
-
-	if (resultindex >= outlen) return 1;
-	out[resultindex] = 0;
-	return (0);
-}
-
-int
-b64_decode(char *in, size_t inlen, unsigned char *out, size_t *outlen)
-{
-	char *end = in + inlen;
-	char iter = 0;
-	uint32_t buf = 0;
-	size_t len = 0;
-
-	while (in < end) {
-		printf("%c\n", *in);
-		unsigned char c = d[*in++];
-		printf("%c\n", c);
-
-		switch (c) {
-		case WHITESPACE:
-			continue;
-		case INVALID:
-			printf("Char invalido\n");
-			return 1;
-		case EQUALS:
-		      in = end;
-		      continue;
-		default:
-		      printf("char: %c\n", c);
-		      buf = buf << 6 | c;
-		      iter++;
-		      if (iter == 4) {
-			      if ((len += 3) > *outlen) {
-				      printf("Overflow\n");
-				      return 1;
-			      }
-			      *(out++) = (buf >> 16) & 255;
-			      *(out++) = (buf >> 8) & 255;
-			      *(out++) = buf & 255;
-			      buf = 0; iter = 0;
-		      }
-
-
-		}
-
-
-	}
-
-	if (iter == 3) {
-		if ((len += 2) > *outlen) return 1;
-		*(out++) = (buf >> 10) & 255;
-		*(out++) = (buf >> 2) & 255;
-	} else if (iter == 2) {
-		if (++len > *outlen) return 1;
-		*(out++) = (buf >> 4) & 255;
-	}
-
-	*(out++) = '\0';
-	*outlen = len;
-
-	return 0;
-}
-
 
 struct field *
 html_parse_form(char *content, size_t size, size_t *numFields)

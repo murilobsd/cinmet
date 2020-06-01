@@ -29,7 +29,8 @@ DLIBV:=		lib$(NAME).$(MAJOR).$(VERSION).so
 # uncomment to enable debugging
 #CLFAGS+=	-g -DDEBUG=1
 
-SRC=		inmet.c
+SRC=		b64.c \
+		inmet.c
 
 OBJ=		${SRC:.c=.o}
 
