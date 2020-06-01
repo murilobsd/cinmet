@@ -25,8 +25,12 @@ int
 main(void)
 {
 	struct html 	h;
+	struct html 	h_data;
 	const char 	*form = "./form_sta.html";
+	const char 	*datafile = "./data_sta.html";
 	size_t numFields = 0;
+	size_t h_data_size = 0;
+
 	const char 	*b64en = "NDcwOQ=="; // "4709"
 	unsigned char captcha[10];
 	size_t captchasize = 10;
@@ -47,7 +51,19 @@ main(void)
 
 	printf("Captcha: %s\n", captcha);
 
+	h_data = html_open_file(datafile);
+
+	if (h_data.size == 0) {
+		html_free(&h);
+		return(1);
+	}
+
+	printf("%s\n", h_data.content);
+
+	data_parse(h_data.content, h_data.size, &h_data_size);
+
 	html_free(&h);
+	html_free(&h_data);
 
         return (0);
 }

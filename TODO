@@ -10,4 +10,5 @@ Submissão do Formulário:
 
 Obter dados meteorológicos:
 
-- Parseados dados
+- [ ] Parsear dados meteorologicos
+- [ ] Exportar csv

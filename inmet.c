@@ -41,6 +41,13 @@ static const unsigned char d[] = {
 static struct field fields[3];
 
 int
+data_parse(char *in, size_t inlen, size_t *outlen)
+{
+
+	return (0);
+}
+
+int
 b64_decode(char *in, size_t inlen, unsigned char *out, size_t *outlen)
 {
 	char *end = in + inlen;
