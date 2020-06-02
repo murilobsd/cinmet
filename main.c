@@ -73,6 +73,16 @@ main(void)
 
 	printf("Station ID: %s\n", staid);
 
+	const char *url = "http://www.inmet.gov.br/sonabra/pg_dspDadosCodigo_sim.php?QTMwNw==";
+	struct req *rq = req_init(url, NULL, 0);
+	struct resp *rp = NULL;
+
+	if ((rp = http_get(rq)) == NULL)
+		req_free(rq);
+
+	printf("Status code: %lu\n", rp->status_code);
+
+	http_free(rp);
 	html_free(&h);
 	html_free(&h_data);
 

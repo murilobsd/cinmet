@@ -31,8 +31,21 @@ http_post(struct req *rq)
 struct resp *
 http_get(struct req *rq)
 {
+	struct resp *rs = NULL;
 
-	return (0);
+	curl_easy_setopt(rq->curl, CURLOPT_URL, rq->url);
+	rq->res = curl_easy_perform(rq->curl);
+	if (rq->res == CURLE_OK) {
+		/* TODO: melhorar isso, funcao de checagem de erro */
+		rs = resp_init();
+		curl_easy_getinfo(rq->curl, CURLINFO_RESPONSE_CODE,
+		    &rs->status_code);
+	} else
+		return NULL;
+
+	rs->req = rq;
+
+	return rs;
 }
 
 void
@@ -54,9 +67,6 @@ req_free(struct req *rq)
 	if (rq->curl != NULL)
 		curl_easy_cleanup(rq->curl);
 
-	if (rq->url != NULL)
-		free(rq->url);
-
 	free(rq);
 }
 
@@ -75,7 +85,8 @@ req_init(const char *url, char *body, size_t body_sz)
 		return NULL;
 	}
 
-	rq->url = strdup(url);
+	//rq->url = strdup(url);
+	rq->url = url;
 	rq->body = body;
 	rq->body_sz = body_sz;
 

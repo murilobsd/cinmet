@@ -85,7 +85,7 @@ int		 b64_encode(const void *, size_t, char *, size_t);
 struct req {
 	CURL 		*curl;
 	CURLcode	 res;
-	char 		*url;
+	const char 	*url;
 	char 		*body;
 	size_t		 body_sz;
 };
