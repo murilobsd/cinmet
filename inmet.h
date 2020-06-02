@@ -16,6 +16,8 @@
 
 #include <time.h>
 
+#include <curl/curl.h>
+
 #ifndef INMET_H
 #define INMET_H
 
@@ -28,6 +30,7 @@
 #define B64_INVALID	66
 #define B64_WHITESPACE	64
 #define DATE_FORMAT 	"%d/%m/%Y"
+#define HTTP_AGENT	"cinmet/0.0.1"
 #define MAX_FIELDS	20
 #define MAX_NUM_DATA 	8760
 #define MAX_STA_COD	5
@@ -58,6 +61,7 @@ struct auto_sta_data {
 	struct tm 	date;			/* date + hour */
 };
 
+/* inmet.c */
 struct field {
 	char 	*name;
 	char	*value;
@@ -78,7 +82,25 @@ int		 b64_decode(char *, size_t, unsigned char *, size_t *);
 int		 b64_encode(const void *, size_t, char *, size_t);
 
 /* request.c */
-int		 http_get(const char *);
-int		 http_post(const char *, char *, size_t);
+struct req {
+	CURL 		*curl;
+	CURLcode	 res;
+	char 		*url;
+	char 		*body;
+	size_t		 body_sz;
+};
+
+struct resp {
+	long	 	 status_code;
+	char 		*data;
+	size_t 	 	 size;
+	struct req 	*req;
+};
+
+struct req	 *req_init(const char *, char *, size_t);
+void		  req_free(struct req *);
+void		  http_free(struct resp *);
+struct resp	 *http_get(struct req *);
+struct resp	 *http_post(struct req *);
 
 #endif /* INMET_H */

@@ -52,7 +52,7 @@ $(DLIBV): $(OBJ)
 lib: $(SLIB) $(DLIB)
 
 $(BIN): $(SLIB)
-	$(CC) -o $@ main.c $(LDFLAGS) -l$(NAME) $(LIB)
+	$(CC) -o $@ main.c $(CFLAGS) $(LDFLAGS) -l$(NAME) $(LIB)
 
 check: inmet
 	valgrind --leak-check=yes ./$(BIN)
