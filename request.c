@@ -85,7 +85,6 @@ req_init(const char *url, char *body, size_t body_sz)
 		return NULL;
 	}
 
-	//rq->url = strdup(url);
 	rq->url = url;
 	rq->body = body;
 	rq->body_sz = body_sz;
