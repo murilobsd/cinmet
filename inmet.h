@@ -14,10 +14,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <time.h>
+
 #ifndef INMET_H
 #define INMET_H
-
-#include <time.h>
 
 /*
  * INMET allows searching in a maximum period of 1 year, that is, the maximum
@@ -36,26 +36,26 @@
 /*
  * Structure represents data from INMET automatic stations.
  */
-struct sta_data {
+struct auto_sta_data {
 	char 		code[MAX_STA_COD]; 	/* station code A000 */
-	struct tm 	data;			/* date + hour */
+	float		dew_inst;		/* dew point */
+	float		dew_max;		/* max dew point */
+	float		dew_min;		/* min point */
+	float		hum_inst;		/* humidity */
+	float		hum_max;		/* max humidity */
+	float		hum_min;		/* min humidity */
+	float		precipitation;		/* precipitation */
+	float		press_max;		/* pressure max */
+	float		press_min;		/* min pressure */
+	float		pressure;		/* pressure */
+	float		radiation;		/* radiation */
 	float		temp_inst;		/* temperature */
 	float		temp_max;		/* max temperature */
 	float		temp_min;		/* min temperature */
-	float		umid_inst;		/* humidity */
-	float		umid_max;		/* max humidity */
-	float		umid_min;		/* min humidity */
-	float		pto_orvalho_inst;	/* dew point */
-	float		pto_orvalho_max;	/* max dew point */
-	float		pto_orvalho_min;	/* min point */
-	float		pressao;		/* pressure */
-	float		pressao_max;		/* pressure max */
-	float		pressao_min;		/* min pressure */
-	float		vento_vel;		/* wind speed */
-	float		vento_direcao;		/* wind direction */
-	float		vento_rajada;		/* gust of wind */
-	float		radiacao;		/* radiation */
-	float		precipitacao;		/* precipitation */
+	float		w_dir;			/* wind direction */
+	float		w_gust;			/* gust of wind */
+	float		w_speed;		/* wind speed */
+	struct tm 	date;			/* date + hour */
 };
 
 struct field {
@@ -76,5 +76,9 @@ int		 data_parse(char *, size_t, size_t *);
 /* b64.c */
 int		 b64_decode(char *, size_t, unsigned char *, size_t *);
 int		 b64_encode(const void *, size_t, char *, size_t);
+
+/* request.c */
+int		 http_get(const char *);
+int		 http_post(const char *, char *, size_t);
 
 #endif /* INMET_H */

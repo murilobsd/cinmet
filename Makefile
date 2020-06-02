@@ -15,13 +15,14 @@
 PREFIX?=	/usr/local
 
 CC?=		cc
-CFLAGS:=	-std=c89 -O2 #-Wall -Wunused \
+CFLAGS:=	-std=c89 -O2 -I. -I/usr/local/include #-Wall -Wunused \
 		#-W -Werror
-LDFLAGS:=	-L.
+LDFLAGS:=	-L. -L/usr/local/lib
 NAME:=		inmet
 MAJOR:=		0
 MINOR:=		3
 VERSION:=	$(MAJOR).$(MINOR)
+LIB:=		-lcurl
 SLIB:=		lib$(NAME).a
 DLIB:=		lib$(NAME).so
 DLIBV:=		lib$(NAME).$(MAJOR).$(VERSION).so
@@ -30,6 +31,7 @@ DLIBV:=		lib$(NAME).$(MAJOR).$(VERSION).so
 #CLFAGS+=	-g -DDEBUG=1
 
 SRC=		b64.c \
+		request.c \
 		inmet.c
 
 OBJ=		${SRC:.c=.o}
@@ -50,7 +52,7 @@ $(DLIBV): $(OBJ)
 lib: $(SLIB) $(DLIB)
 
 $(BIN): $(SLIB)
-	$(CC) -o $@ main.c $(LDFLAGS) -l$(NAME)
+	$(CC) -o $@ main.c $(LDFLAGS) -l$(NAME) $(LIB)
 
 check: inmet
 	valgrind --leak-check=yes ./$(BIN)
