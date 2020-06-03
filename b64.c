@@ -95,7 +95,7 @@ b64_decode(char *in, size_t inlen, unsigned char *out, size_t *outlen)
 	size_t len = 0;
 
 	while (in < end) {
-		printf("%c\n", *in);
+		//printf("%c\n", *in);
 		unsigned char c = d[*in++];
 		printf("%c\n", c);
 
