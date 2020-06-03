@@ -62,11 +62,7 @@ struct auto_sta_data {
 };
 
 /* station.c */
-struct field {
-	char 	*name;
-	char	*value;
-};
-struct field 	*html_parse_form(char *, size_t, size_t *);
+char		*staa_parse_form_data(const char *, size_t, size_t *);
 
 struct html {
 	char 	*content;
@@ -102,5 +98,9 @@ void		  req_free(struct req *);
 void		  http_free(struct resp *);
 struct resp	 *http_get(struct req *);
 struct resp	 *http_post(struct req *);
+
+
+/* utils.c */
+int dttotm(const char *, struct tm *);
 
 #endif /* INMET_H */
