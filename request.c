@@ -28,7 +28,26 @@ static size_t		 http_write_cb(void *, size_t, size_t, void *);
 struct resp *
 http_post(struct req *rq)
 {
-	return (0);
+	struct resp *rs = NULL;
+
+	rs = resp_init();
+
+	curl_easy_setopt(rq->curl, CURLOPT_URL, rq->url);
+	curl_easy_setopt(rq->curl, CURLOPT_WRITEFUNCTION, http_write_cb);
+	curl_easy_setopt(rq->curl, CURLOPT_WRITEDATA, (void *)rs);
+	curl_easy_setopt(rq->curl, CURLOPT_POST, 1L);
+	
+	if (rq->body != NULL)
+		curl_easy_setopt(rq->curl, CURLOPT_POSTFIELDS, rq->body);
+
+	curl_easy_setopt(rq->curl, CURLOPT_POSTFIELDSIZE, rq->body_sz);
+
+	/* come baby */
+	rq->res = curl_easy_perform(rq->curl);
+
+	rs->req = rq;
+
+	return rs;
 }
 
 struct resp *
