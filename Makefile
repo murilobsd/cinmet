@@ -32,7 +32,7 @@ DLIBV:=		lib$(NAME).$(MAJOR).$(VERSION).so
 
 SRC=		b64.c \
 		request.c \
-		inmet.c
+		station.c
 
 OBJ=		${SRC:.c=.o}
 
