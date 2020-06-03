@@ -123,7 +123,14 @@ req_init(const char *url, char *body, size_t body_sz)
 
 	curl_global_init(CURL_GLOBAL_ALL);
 
+	/* init curl */
 	rq->curl = curl_easy_init();
+
+	/* curl set verbose */
+	curl_easy_setopt(rq->curl, CURLOPT_VERBOSE, 0L);
+
+	/* curl cookie jar enable for this session */
+	curl_easy_setopt(rq->curl, CURLOPT_COOKIEJAR, "-");
 
 	if (rq->curl == NULL) {
 		free(rq);

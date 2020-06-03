@@ -24,13 +24,16 @@
 int
 main(void)
 {
+/*
 	struct html 	h;
 	struct html 	h_data;
 	const char 	*form = "./form_sta.html";
 	const char 	*datafile = "./data_sta.html";
+*/
 	size_t numFields = 0;
-	size_t h_data_size = 0;
+	//size_t h_data_size = 0;
 
+/*
 	const char 	*b64en = "NDcwOQ=="; // "4709"
 	const char 	*b64de = "A307"; // "QTMwNw=="
 
@@ -45,10 +48,15 @@ main(void)
 	if (h.size == 0)
 		return(1);
 
-	printf("%s\n", h.content);
+	//printf("%s\n", h.content);
 
 
-	html_parse_form(h.content, h.size, &numFields);
+	char *form_fields = staa_parse_form_data(h.content, h.size, &numFields);
+	if (numFields  == 0)
+		printf("Falhou parseamento\n");
+	printf("Form fields: %s\n", form_fields);
+	free(form_fields);
+
 
 	int err = b64_decode((char *)b64en, strlen(b64en), captcha, &captchasize);
 	if (err != 0)
@@ -73,6 +81,7 @@ main(void)
 
 	printf("Station ID: %s\n", staid);
 
+*/
 	const char *url = "http://www.inmet.gov.br/sonabra/pg_dspDadosCodigo_sim.php?QTMwNw==";
 	struct req *rq = req_init(url, NULL, 0);
 	struct resp *rp = NULL;
@@ -84,10 +93,17 @@ main(void)
 	printf("Content: %s\n", rp->data);
 	printf("Content Size: %lu\n", rp->size);
 
-	http_free(rp);
+	char *form_fields = staa_parse_form_data(rp->data, rp->size, &numFields);
+	if (numFields  == 0)
+		printf("Falhou parseamento\n");
+	printf("Form fields: %s\n", form_fields);
+	if (form_fields != NULL) free(form_fields);
 
+	http_free(rp);
+/*
 	html_free(&h);
 	html_free(&h_data);
 
+*/
         return (0);
 }

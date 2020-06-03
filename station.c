@@ -21,19 +21,6 @@
 
 #include "inmet.h"
 
-
-
-static struct field fields[3];
-static int dttotm(const char *, struct tm *);
-
-static int
-dttotm(const char *datestr, struct tm *tm)
-{
-	if ((strptime(datestr, DATE_FORMAT, tm)) == NULL)
-		return (1);
-	return (0);
-}
-
 int
 data_parse(char *in, size_t inlen, size_t *outlen)
 {
@@ -79,59 +66,81 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 	return (0);
 }
 
-struct field *
-html_parse_form(char *content, size_t size, size_t *numFields)
+/* 
+ * This function obtains the form fields that will be sent to INMET to obtain 
+ * the meteorological data from the automatic station.
+ */
+char *
+staa_parse_form_data(const char *html, size_t hsize, size_t *out_len)
 {
-	/*const int	maxFields = 3;*/
-	const char 	*field1 = "aleaValue";
-	*numFields = 3;
-	//char *field1Value;
-
-	printf("Field1: %s\n", field1);
+	const int max_fields = 3;
 
 	int is_enter = 0;
 	int count = 0;
 	int found = 0;
 	size_t i;
 
-	//field1Value = strchr(content, 'v');
-	for (i = 0; i < size; i++) {
-		if (i + 1 < size && is_enter == 0)
-			if (content[i] == 'v' && content[i+1] == 'a') {
-				printf("Acho que encontrei\n");
-				is_enter = 1;
-				count = 1;
-			}
-		if (is_enter == 1) {
-			count += 1;
-		}
+	//char *form_fields = "aleaValue=%s&xaleaValue=%s&xID=%s&aleaNum=%s";
+	char captcha[10];
+	size_t captchasize = 10;
+	char *f_field = (char *)malloc(200);
+	*out_len = strlen(f_field) + 1;
 
+	memset(f_field, 0, 200);
+
+	while (html != NULL && *html != '\0') {
+		if (*html == 'v' && *++html == 'a' && is_enter == 0) {
+			is_enter = 1;
+			count = 2;
+		}
+		if (is_enter == 1)
+			count +=1;
 		if (count == 9) {
-			int para = 0;
-			int num = 0;
+			int token_end = 1;
 			char value[80];
-			while (para == 0) {
-				if (content[i] != '"')
-					value[num] = content[i];
-				else {
-					value[num++] = '\0';
-					para = 1;
-				}
-				num++;
-				i++;
-			}
-			//printf("%c\n", content[i]);
-			printf("value: %s\n", value);
-			count = 0;
-			is_enter = 0;
-			found += 1;
-		}
+			int pos = 0;
 
+			while (token_end == 1) {
+				if (*html != '"') {
+					value[pos] = *html;
+					pos++;
+					++html;
+				} else {
+					value[pos] = '\0';
+					if (found == 0) {
+						strcat(f_field, "aleaValue=");
+						strcat(f_field, value);
+						strcat(f_field, "&");
+						b64_decode(value, strlen(value), captcha, &captchasize);
+						if (captchasize > 0) {
+							strcat(f_field, "aleaNum=");
+							strcat(f_field, captcha);
+							strcat(f_field, "&");
+						}
+						token_end = 0;
+							
+					} else if (found == 1) {
+						strcat(f_field, "xaleaValue=");
+						strcat(f_field, value);
+						strcat(f_field, "&");
+						token_end = 0;
+					} else if (found == 2) {
+						strcat(f_field, "xID=");
+						strcat(f_field, value);
+						token_end = 0;
+					}
+					found += 1;
+				}
+			}
+			is_enter = 0;
+			count = 0;
+		}
 		if (found == 3)
 			break;
+		++html;
 	}
 
-	return NULL;
+	return f_field;
 }
 
 
