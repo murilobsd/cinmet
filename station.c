@@ -19,6 +19,8 @@
 #include <string.h>
 #include <stdint.h>
 
+#include <curl/curl.h>
+
 #include "inmet.h"
 
 int
@@ -79,6 +81,7 @@ staa_parse_form_data(const char *html, size_t hsize, size_t *out_len)
 	int count = 0;
 	int found = 0;
 	size_t i;
+	CURL *curl = curl_easy_init();
 
 	//char *form_fields = "aleaValue=%s&xaleaValue=%s&xID=%s&aleaNum=%s";
 	char captcha[10];
@@ -108,23 +111,41 @@ staa_parse_form_data(const char *html, size_t hsize, size_t *out_len)
 				} else {
 					value[pos] = '\0';
 					if (found == 0) {
-						strcat(f_field, "aleaValue=");
-						strcat(f_field, value);
-						strcat(f_field, "&");
 						b64_decode(value, strlen(value), captcha, &captchasize);
 						if (captchasize > 0) {
 							strcat(f_field, "aleaNum=");
 							strcat(f_field, captcha);
 							strcat(f_field, "&");
 						}
+						char *nvalue = curl_easy_escape(curl, value, strlen(value));
+						value[0] = '\0';
+						for (size_t n = 0; n < strlen(nvalue); n++)
+							value[n] = nvalue[n];
+						value[strlen(nvalue)] = '\0';
+						free(nvalue);
+						strcat(f_field, "aleaValue=");
+						strcat(f_field, value);
+						strcat(f_field, "&");
 						token_end = 0;
 							
 					} else if (found == 1) {
+						char *nvalue = curl_easy_escape(curl, value, strlen(value));
+						value[0] = '\0';
+						for (size_t n = 0; n < strlen(nvalue); n++)
+							value[n] = nvalue[n];
+						value[strlen(nvalue)] = '\0';
+						free(nvalue);
 						strcat(f_field, "xaleaValue=");
 						strcat(f_field, value);
 						strcat(f_field, "&");
 						token_end = 0;
 					} else if (found == 2) {
+						char *nvalue = curl_easy_escape(curl, value, strlen(value));
+						value[0] = '\0';
+						for (size_t n = 0; n < strlen(nvalue); n++)
+							value[n] = nvalue[n];
+						value[strlen(nvalue)] = '\0';
+						free(nvalue);
 						strcat(f_field, "xID=");
 						strcat(f_field, value);
 						token_end = 0;

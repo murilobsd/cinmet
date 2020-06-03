@@ -19,6 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <curl/curl.h>
+
 #include "inmet.h"
 
 int
@@ -82,9 +84,13 @@ main(void)
 	printf("Station ID: %s\n", staid);
 
 */
+	const char *fielddt = "&dtaini=03%2F06%2F2020&dtafim=03%2F06%2F2020";
 	const char *url = "http://www.inmet.gov.br/sonabra/pg_dspDadosCodigo_sim.php?QTMwNw==";
 	struct req *rq = req_init(url, NULL, 0);
 	struct resp *rp = NULL;
+	struct resp *rp1 = NULL;
+
+	char *fields = (char *)malloc(500);
 
 	if ((rp = http_get(rq)) == NULL)
 		req_free(rq);
@@ -97,9 +103,41 @@ main(void)
 	if (numFields  == 0)
 		printf("Falhou parseamento\n");
 	printf("Form fields: %s\n", form_fields);
+
+	strcat(fields, form_fields);
+	strcat(fields, fielddt);
+
+	printf("Fields: %s\n", fields);
+
+	rq->body = strdup(fields);
+	rq->body_sz = strlen(fields);
+
+	if ((rp1 = http_post(rq)) == NULL)
+		req_free(rq);
+
+	printf("Status code: %lu\n", rp1->status_code);
+	printf("Content: %s\n", rp1->data);
+	printf("Content Size: %lu\n", rp1->size);
+
+	const char *url2 = "http://www.inmet.gov.br/sonabra/pg_downDadosCodigo_sim.php";
+
+	memset(rp, 0, sizeof(struct resp));
+
+
+	rq->url = url2;
+
+	if ((rp = http_get(rq)) == NULL)
+		req_free(rq);
+
+	printf("Status code: %lu\n", rp->status_code);
+	printf("Content: %s\n", rp->data);
+	printf("Content Size: %lu\n", rp->size);
+
 	if (form_fields != NULL) free(form_fields);
+	if (fields != NULL) free(fields);
 
 	http_free(rp);
+	http_free(rp1);
 /*
 	html_free(&h);
 	html_free(&h_data);

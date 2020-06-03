@@ -16,3 +16,12 @@
 
 #include "inmet.h"
 
+/*
+ * struct params {code, dt_sta, dt_end }
+ * return *sta_data, size;
+ */
+int
+staa_get_data(const char *code, const char *dt_sta, const char *dt_end)
+{
+	return (0);
+}
