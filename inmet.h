@@ -61,7 +61,7 @@ struct auto_sta_data {
 	struct tm 	date;			/* date + hour */
 };
 
-/* inmet.c */
+/* station.c */
 struct field {
 	char 	*name;
 	char	*value;

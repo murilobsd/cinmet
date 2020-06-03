@@ -24,5 +24,7 @@ Misc:
 Request:
 
 - [X] Requisitar Formulário
+	- [X] salvar resposta em uma estrutura
 - [ ] Enviar dados pelo formulário
-- [ ] Realizar o download do "csv"
+- [ ] Realizar o download do "csv" (apartir daqui voltamos para o inicio dessa
+      TODO.

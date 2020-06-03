@@ -81,8 +81,11 @@ main(void)
 		req_free(rq);
 
 	printf("Status code: %lu\n", rp->status_code);
+	printf("Content: %s\n", rp->data);
+	printf("Content Size: %lu\n", rp->size);
 
 	http_free(rp);
+
 	html_free(&h);
 	html_free(&h_data);
 

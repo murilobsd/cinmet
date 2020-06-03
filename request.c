@@ -16,11 +16,14 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "inmet.h"
 
 static struct resp 	*resp_init(void);
 static void		 resp_free(struct resp *);
+static size_t		 http_write_cb(void *, size_t, size_t, void *);
+
 
 struct resp *
 http_post(struct req *rq)
@@ -33,19 +36,51 @@ http_get(struct req *rq)
 {
 	struct resp *rs = NULL;
 
+	rs = resp_init();
+
 	curl_easy_setopt(rq->curl, CURLOPT_URL, rq->url);
+	curl_easy_setopt(rq->curl, CURLOPT_WRITEFUNCTION, http_write_cb);
+	curl_easy_setopt(rq->curl, CURLOPT_WRITEDATA, (void *)rs);
+
+
+	/* come baby */
 	rq->res = curl_easy_perform(rq->curl);
+
+/*
+	TODO: Checar através de uma outra função a resposta se tem err ou nao 
+	
 	if (rq->res == CURLE_OK) {
-		/* TODO: melhorar isso, funcao de checagem de erro */
-		rs = resp_init();
 		curl_easy_getinfo(rq->curl, CURLINFO_RESPONSE_CODE,
 		    &rs->status_code);
 	} else
 		return NULL;
+*/
 
 	rs->req = rq;
 
 	return rs;
+}
+
+static
+size_t http_write_cb(void *contents, size_t size, size_t nmemb, void *userp)
+{
+	size_t realsize = size * nmemb;
+	struct resp *rs = (struct resp *)userp;
+
+
+	/* resize the response data */
+	char *ptr = realloc(rs->data, rs->size + realsize + 1);
+	if (ptr == NULL)
+		return 0;
+
+	rs->data = ptr;
+
+	/* copy new "chunk" */
+	memcpy(&(rs->data[rs->size]), contents, realsize);
+	rs->size += realsize;
+	rs->data[rs->size] = 0;
+
+	return realsize;
 }
 
 void
@@ -53,10 +88,15 @@ http_free(struct resp *rs)
 {
 	if (rs == NULL) return;
 
+	/* clean request */
 	if (rs->req != NULL)
 		req_free(rs->req);
 
+	/* clean response */
 	resp_free(rs);
+
+	/* we're done with libcurl, so clean it up */
+	curl_global_cleanup();
 }
 
 void
@@ -75,11 +115,16 @@ req_init(const char *url, char *body, size_t body_sz)
 {
 	struct req *rq;
 
+
 	rq = (struct req *)malloc(sizeof(struct req));
+
 	if (rq == NULL)
 		return NULL;
 
+	curl_global_init(CURL_GLOBAL_ALL);
+
 	rq->curl = curl_easy_init();
+
 	if (rq->curl == NULL) {
 		free(rq);
 		return NULL;
@@ -108,11 +153,11 @@ resp_free(struct resp *rs)
 static struct resp *
 resp_init(void)
 {
-	struct resp *r;
+	struct resp *rs;
 
-	r = (struct resp *)malloc(sizeof(struct resp));
-	r->data = (char *)malloc(1);
-	r->size = 0;
+	rs = (struct resp *)malloc(sizeof(struct resp));
+	rs->data = (char *)malloc(1);
+	rs->size = 0;
 
-	return r;
+	return rs;
 }
