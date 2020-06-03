@@ -13,17 +13,14 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
 #include <stdlib.h>
 #include <string.h>
-#include <stdio.h>
 
 #include "inmet.h"
 
+static size_t		 http_write_cb(void *, size_t, size_t, void *);
 static struct resp 	*resp_init(void);
 static void		 resp_free(struct resp *);
-static size_t		 http_write_cb(void *, size_t, size_t, void *);
-
 
 struct resp *
 http_post(struct req *rq)

@@ -13,7 +13,6 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-
 #include <time.h>
 
 #include <curl/curl.h>
@@ -101,6 +100,6 @@ struct resp	 *http_post(struct req *);
 
 
 /* utils.c */
-int dttotm(const char *, struct tm *);
+int		  dttotm(const char *, struct tm *);
 
 #endif /* INMET_H */

@@ -143,7 +143,6 @@ staa_parse_form_data(const char *html, size_t hsize, size_t *out_len)
 	return f_field;
 }
 
-
 struct html
 html_open_file(const char *filename)
 {
