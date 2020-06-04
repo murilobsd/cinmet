@@ -50,15 +50,15 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 				/* campo date */
 				struct tm tm;
 				if (dttotm((const char *)field, &tm) == 0)
-					printf("Dia: %d Mês: %d Ano: %d\n", 
-					    tm.tm_mday, (tm.tm_mon+1), 
+					printf("Dia: %d Mês: %d Ano: %d\n",
+					    tm.tm_mday, (tm.tm_mon+1),
 					    (1900 +tm.tm_year));
 			} else if (count > 3) {
 				/* campos das variaveis meteorologicas */
 				float res = strtof(field, (char **)NULL);
 				printf("Campo %d: %s (original)\n", count, field);
 				printf("Campo %d: %.2f (convertido)\n", count, res);
-			} else 
+			} else
 				printf("Campo %d: %s\n", count, field);
 			field = strtok(NULL, ",");
 			count +=1;
@@ -68,8 +68,8 @@ data_parse(char *in, size_t inlen, size_t *outlen)
 	return (0);
 }
 
-/* 
- * This function obtains the form fields that will be sent to INMET to obtain 
+/*
+ * This function obtains the form fields that will be sent to INMET to obtain
  * the meteorological data from the automatic station.
  */
 char *
@@ -83,7 +83,6 @@ staa_parse_form_data(const char *html, size_t hsize, size_t *out_len)
 	size_t i;
 	CURL *curl = curl_easy_init();
 
-	//char *form_fields = "aleaValue=%s&xaleaValue=%s&xID=%s&aleaNum=%s";
 	char captcha[10];
 	size_t captchasize = 10;
 	char *f_field = (char *)malloc(200);
@@ -127,7 +126,7 @@ staa_parse_form_data(const char *html, size_t hsize, size_t *out_len)
 						strcat(f_field, value);
 						strcat(f_field, "&");
 						token_end = 0;
-							
+
 					} else if (found == 1) {
 						char *nvalue = curl_easy_escape(curl, value, strlen(value));
 						value[0] = '\0';

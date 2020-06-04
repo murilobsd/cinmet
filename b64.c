@@ -13,10 +13,6 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
-#include <err.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdint.h>
 
 #include "inmet.h"
@@ -95,9 +91,7 @@ b64_decode(char *in, size_t inlen, unsigned char *out, size_t *outlen)
 	size_t len = 0;
 
 	while (in < end) {
-		//printf("%c\n", *in);
 		unsigned char c = d[*in++];
-		printf("%c\n", c);
 
 		switch (c) {
 		case B64_WHITESPACE:
@@ -113,10 +107,9 @@ b64_decode(char *in, size_t inlen, unsigned char *out, size_t *outlen)
 		      buf = buf << 6 | c;
 		      iter++;
 		      if (iter == 4) {
-			      if ((len += 3) > *outlen) {
-				      printf("Overflow\n");
+			      if ((len += 3) > *outlen)
 				      return 1;
-			      }
+
 			      *(out++) = (buf >> 16) & 255;
 			      *(out++) = (buf >> 8) & 255;
 			      *(out++) = buf & 255;

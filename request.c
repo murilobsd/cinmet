@@ -34,20 +34,10 @@ http_post(struct req *rq)
 	curl_easy_setopt(rq->curl, CURLOPT_WRITEDATA, (void *)rs);
 	curl_easy_setopt(rq->curl, CURLOPT_POST, 1L);
 
-	//struct curl_slist *headers=NULL;
-	//headers = curl_slist_append(headers, "Connection: Keep-Alive");
-	//headers = curl_slist_append(headers, "Transfer-Encoding: chunked");
-	//headers = curl_slist_append(headers, "Origin: http://www.inmet.gov.br");
-	//headers = curl_slist_append(headers, "Pragma: no-cache");
-	//headers = curl_slist_append(headers, "Upgrade-Insecure-Requests: 1");
-	//headers = curl_slist_append(headers, "Referer: http://www.inmet.gov.br/sonabra/pg_dspDadosCodigo_sim.php?QTMwNw==");
-	  
-	//curl_easy_setopt(rq->curl, CURLOPT_HTTPHEADER, headers);
 
-	
 	if (rq->body != NULL)
 		curl_easy_setopt(rq->curl, CURLOPT_POSTFIELDS, rq->body);
-	
+
 	curl_easy_setopt(rq->curl, CURLOPT_POSTFIELDSIZE, rq->body_sz);
 
 	/* come baby */
@@ -75,8 +65,8 @@ http_get(struct req *rq)
 	rq->res = curl_easy_perform(rq->curl);
 
 /*
-	TODO: Checar através de uma outra função a resposta se tem err ou nao 
-	
+	TODO: Checar através de uma outra função a resposta se tem err ou nao
+
 	if (rq->res == CURLE_OK) {
 		curl_easy_getinfo(rq->curl, CURLINFO_RESPONSE_CODE,
 		    &rs->status_code);
@@ -167,18 +157,19 @@ req_init(const char *url, char *body, size_t body_sz)
 
 	/* enable TCP keep-alive for this transfer */
 	curl_easy_setopt(rq->curl, CURLOPT_TCP_KEEPALIVE, 1L);
-	   
+
      	/* keep-alive idle time to 120 seconds */
        	curl_easy_setopt(rq->curl, CURLOPT_TCP_KEEPIDLE, 120L);
-	
+
 	/* interval time between keep-alive probes: 60 seconds */
 	curl_easy_setopt(rq->curl, CURLOPT_TCP_KEEPINTVL, 60L);
-
-	curl_easy_setopt(rq->curl, CURLOPT_USERAGENT, HTTP_AGENT);
-	//curl_easy_setopt(rq->curl, CURLOPT_REFERER, "");
 	curl_easy_setopt(rq->curl, CURLOPT_ACCEPT_ENCODING, "");
 	curl_easy_setopt(rq->curl, CURLOPT_MAXAGE_CONN, 30L);
 	curl_easy_setopt(rq->curl, CURLOPT_FORBID_REUSE, 1L);
+
+	/* user agent */
+	curl_easy_setopt(rq->curl, CURLOPT_USERAGENT, HTTP_AGENT);
+
 	if (rq->curl == NULL) {
 		free(rq);
 		return NULL;
